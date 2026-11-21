@@ -21,7 +21,39 @@ Own the live integration seam. Keep the shared stub running and start the real b
 
 ## Send to Claude Code in build/screen
 
-Keep the existing React app and same-origin proxy. Make a single fixture-only polish pass using Taste as a reference. Show the real product image when available, one readable price and short reason. Give the QR a white square, clean margin, no animation, and the instruction “Scan to review and pay.” Keep fixture mode visible. In the existing UI, provide Mac playback or browser push-to-talk only as a fallback. Use Pocock TDD for stale QR and late responses after Clear. Coordinate the exact offer binding with Antigravity before changing behavior. Test on the Mac at presentation width and at 390 px, and report the build, screenshots, and commit. Preserve the screen if the optional reference tool fails. No new UI framework.
+Source: [Peter Yang's GitHub transcript](https://github.com/petergyang/behind-the-craft-transcripts/blob/HEAD/transcripts/2026/194-full-tutorial-how-to-fix-ai-slop-with-claude-design-in-40-minutes-nate-parrott.md) and [episode notes](https://creatoreconomy.so/p/how-to-fix-ai-slop-with-claude-design-nate-parrott). Two options and one review are our hackathon adaptation, not Nate's suggested option count. The earlier palette is a suggestion, not a requirement.
+
+```text
+Continue in ~/shop-counter-screen on build/screen. Own only companion-screen/.
+The judge talks and taps on the CoreS3, glances at the Mac, then scans with
+their phone. The Mac is a counter display, not the main controls.
+
+1. Read the existing React and CSS. Capture the current fixture screen if
+   available. Treat working code as the source of truth. Use two familiar
+   patterns for structure: a store product display and a scan-to-pay terminal.
+   Borrow hierarchy and alignment from Taste Skill. Do not install its hooks.
+2. Show two low-fi wireframes side by side, using identical fixture content.
+   A: product-first, then switch focus to a dedicated scan view after the tap.
+   B: keep the product visible beside a dedicated scan panel at desktop width.
+   Show the recommendation and handoff states for each. If screenshots are
+   unavailable, ASCII is fine. Recommend one and tell me what you'd borrow
+   from the other. Stop for one A/B or remix decision before changing the UI.
+3. Implement only the approved direction in the existing React app. Use
+   merchant product art when available, one large price from state, a short
+   reason, and “Scan to review and pay.” Keep the QR still with a white quiet
+   zone. Avoid the default serif/off-white/orange/card-edge-stripe combination,
+   decorative gradients, and nested cards. Pick color from the product and
+   the room's readability needs, not a template. Keep fixture mode visible.
+4. Preserve the same-origin proxy and checkout behavior. Never expose a
+   readable live QR or checkout URL in screenshots, logs, or external tools.
+   Coordinate offer binding with Antigravity before changing the contract.
+   Use Matt Pocock's TDD only for behavior changes such as stale QR or Clear.
+5. Check the fixture at presentation width and 390 px: no clipping, no
+   horizontal scroll, item and price legible, next action obvious, QR visible
+   only for a valid handoff. Report screenshots, tests, and the commit.
+   If Desktop's Rollup build fails, ask for the Mac build. No new framework,
+   no separate Claude Design or Stitch setup, no merge to main.
+```
 
 ## Send to Codex in build/device
 
