@@ -35,7 +35,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: Polish CoreS3 status and control labels; await live pairing contract - Codex
+- device: CoreS3 status and label polish compiled; await pairing contract before flash and live test - Codex
 
 ## Next (ordered)
 

@@ -20,17 +20,22 @@ bool readerReady = false;
 bool badgeSent = false;
 unsigned long lastBadgePoll = 0;
 
-void show(const String& message) {
-  M5.Display.clear();
-  M5.Display.setCursor(0, 0);
-  M5.Display.setTextSize(2);
-  M5.Display.println(message);
-  M5.Display.println("\nHOLD bottom left to talk\nTAP bottom centre to buy");
+void show(const char* status, const String& detail = "") {
+  M5.Display.fillScreen(TFT_BLACK);
+  M5.Display.setTextColor(TFT_WHITE, TFT_BLACK);
+  M5.Display.setTextDatum(middle_center);
+  M5.Display.setTextSize(3);
+  M5.Display.drawString(status, M5.Display.width() / 2, 80);
+  M5.Display.setTextSize(1);
+  if (!detail.isEmpty()) M5.Display.drawString(detail, M5.Display.width() / 2, 135);
+  M5.Display.drawFastHLine(0, 180, M5.Display.width(), TFT_DARKGREY);
+  M5.Display.drawString("Hold to talk", M5.Display.width() / 6, 210);
+  M5.Display.drawString("Tap to review", M5.Display.width() / 2, 210);
 }
 
 void sendIntent(const char* source = "button") {
-  if (session.isEmpty()) { show("Pair session first"); return; }
-  if (WiFi.status() != WL_CONNECTED) { show(String("Wi-Fi status ") + static_cast<int>(WiFi.status()) + "\nRetrying connection"); WiFi.reconnect(); return; }
+  if (session.isEmpty()) { show("Ready", "Waiting for session"); return; }
+  if (WiFi.status() != WL_CONNECTED) { show("Ready", "Wi-Fi disconnected; retry"); WiFi.reconnect(); return; }
   JsonDocument request;
   request["session_id"] = session;
   request["type"] = "buy";
@@ -40,17 +45,18 @@ void sendIntent(const char* source = "button") {
   HTTPClient http;
   http.setConnectTimeout(10000);
   http.setTimeout(10000);
-  if (!http.begin(String(BACKEND_URL) + "/intent")) { show("HTTP error"); return; }
+  if (!http.begin(String(BACKEND_URL) + "/intent")) { show("Ready", "Connection error"); return; }
   http.addHeader("Content-Type", "application/json");
+  show("Looking it up");
   const int status = http.POST(body);
-  if (status != 200) { http.end(); show("Intent error"); return; }
+  if (status != 200) { http.end(); show("Ready", "Review request failed"); return; }
   JsonDocument response;
   const DeserializationError error = deserializeJson(response, http.getStream());
   http.end();
-  if (error || response["session_id"] != session || !response["handoff"]["status"].is<const char*>()) { show("Invalid response"); return; }
+  if (error || response["session_id"] != session || !response["handoff"]["status"].is<const char*>()) { show("Ready", "Invalid response"); return; }
   const char* result = response["handoff"]["status"];
-  const char* speech = response["reply"]["speech"] | "";
-  show(String(result) == "ready" ? String("Sent\n") + speech : String("Intent: ") + result + "\n" + speech);
+  show(String(result) == "ready" ? "Scan on the Mac" : "Ready",
+       String(result) == "ready" ? "" : "Check the Mac before trying again");
 }
 
 constexpr size_t sampleRate = 16000;
@@ -96,29 +102,30 @@ class AudioBody : public Stream {
 };
 
 void sendAudio() {
-  if (WiFi.status() != WL_CONNECTED) { show("Wi-Fi disconnected"); return; }
+  if (WiFi.status() != WL_CONNECTED) { show("Ready", "Wi-Fi disconnected"); return; }
   AudioBody body(session, audioSamples, sampleCount);
   HTTPClient http;
   http.setConnectTimeout(10000); http.setTimeout(10000);
-  if (!http.begin(String(BACKEND_URL) + "/utterance")) { show("HTTP error"); return; }
+  if (!http.begin(String(BACKEND_URL) + "/utterance")) { show("Ready", "Connection error"); return; }
   http.addHeader("Content-Type", "multipart/form-data; boundary=counter-boundary");
+  show("Looking it up");
   const int status = http.sendRequest("POST", &body, body.length());
-  if (status != 200) { http.end(); show("Audio request error"); return; }
+  if (status != 200) { http.end(); show("Ready", "Audio request failed"); return; }
   JsonDocument response;
   const DeserializationError error = deserializeJson(response, http.getStream());
   http.end();
-  if (error || response["session_id"] != session || !response["reply"]["speech"].is<const char*>()) { show("Invalid response"); return; }
-  show(String(response["reply"]["speech"].as<const char*>()));
+  if (error || response["session_id"] != session || !response["reply"]["speech"].is<const char*>()) { show("Ready", "Invalid response"); return; }
+  show("Ready");
 }
 
 void beginRecording() {
-  if (session.isEmpty()) { show("Pair session first"); return; }
+  if (session.isEmpty()) { show("Ready", "Waiting for session"); return; }
   if (!audioSamples) audioSamples = static_cast<int16_t*>(ps_malloc(maxSamples * sizeof(int16_t)));
-  if (!audioSamples) { show("Audio memory error"); return; }
+  if (!audioSamples) { show("Ready", "Audio memory error"); return; }
   M5.Speaker.end();
-  if (!M5.Mic.begin()) { show("Microphone error"); return; }
+  if (!M5.Mic.begin()) { show("Ready", "Microphone error"); return; }
   sampleCount = 0; chunkPending = false; recording = true;
-  show("Listening (5 sec max)");
+  show("Listening");
 }
 
 void updateRecording() {
@@ -127,12 +134,12 @@ void updateRecording() {
   const bool stop = !M5.BtnA.isPressed() || sampleCount >= maxSamples;
   if (stop && !chunkPending) {
     recording = false; M5.Mic.end();
-    if (sampleCount) { show("Sending audio"); sendAudio(); } else { show("No audio captured"); }
+    if (sampleCount) { show("Looking it up"); sendAudio(); } else { show("Ready", "No audio captured"); }
     return;
   }
   if (!stop && !chunkPending) {
     if (!M5.Mic.record(audioSamples + sampleCount, chunkSamples, sampleRate)) {
-      recording = false; M5.Mic.end(); show("Microphone error"); return;
+      recording = false; M5.Mic.end(); show("Ready", "Microphone error"); return;
     }
     chunkPending = true;
   }
@@ -144,13 +151,13 @@ void setup() {
   M5.setTouchButtonHeight(60);
   Serial.begin(115200);
   readerReady = m5::unit::wiring::addI2C(units, reader, 0, m5::unit::wiring::NessoPort::PortA) && units.begin();
-  show("Connecting Wi-Fi");
+  show("Ready", "Connecting Wi-Fi");
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   const unsigned long start = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - start < 10000) { M5.update(); delay(20); }
-  show(WiFi.status() == WL_CONNECTED ? "Send session via USB" : "Wi-Fi error");
+  show("Ready", WiFi.status() == WL_CONNECTED ? "Waiting for session" : "Wi-Fi connection failed");
 }
 
 void loop() {
@@ -161,7 +168,7 @@ void loop() {
     if (line.startsWith("session ")) {
       session = line.substring(8);
       badgeSent = false;
-      show(session.isEmpty() ? "Pair session first" : (WiFi.status() == WL_CONNECTED ? "Session paired" : String("Paired; Wi-Fi status ") + static_cast<int>(WiFi.status())));
+      show("Ready", session.isEmpty() ? "Waiting for session" : (WiFi.status() == WL_CONNECTED ? "" : "Wi-Fi disconnected"));
     }
   }
   if (readerReady && !recording && !badgeSent && !session.isEmpty() && millis() - lastBadgePoll >= 300) {
