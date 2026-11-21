@@ -35,17 +35,18 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Next (ordered)
 
-1. Start all three lanes with the copy-paste prompts in `docs/LAUNCH.md`.
-2. Integrate the laptop flow first: exact sticker, displayed offer, intent, then the phone handoff.
-3. Verify the event-key model calls and add the live voice loop. Add CoreS3 audio and RFID after the button works.
-4. Collect consented unrehearsed inputs while the agents build. Keep recordings out of the public repo.
-5. Freeze at 16:15. Rehearse, record the one-minute video, and submit at 16:50.
+1. Send the three lane prompts in `docs/DEMO-POLISH.md`. Keep the stub for fixture work.
+2. Start a separate live backend. Test the exact sticker, offer-bound intent, and phone handoff.
+3. Run one focused visual pass in parallel. Then test CoreS3 voice and tap against the same live session.
+4. Rehearse with an unrehearsed request. Keep any consented recordings out of the public repo.
+5. Freeze at 16:15. Record the one-minute video and aim to submit at 16:50.
 
 ## Blocked
 
 - The Mac preview still uses the fixture backend. The live backend and screen have not passed a joint phone checkout.
 - The CoreS3 can send touch intent and a WAV in separate bench tests. Live pairing and offer-bound intent are not yet verified. The current firmware displays reply text; plan on Mac playback unless board playback is proven.
-- Integration checkpoints: backend `1047d9f` (implementation `81e7a78`); screen `e9b3479` (Mac build and 9 tests pass); device `3fbb8b4`. See `docs/DEMO.md`.
+- At 14:15 ET, all three worktrees were clean. Backend `e45102e` includes the price and evaluation scope decisions. Screen `e9b3479` passed the Mac build and nine tests. Device `696f8b5` records the RFID demo-tag test against the stub.
+- Port 5173 still reached the stub. No live backend answered the health check on port 8788. See `docs/DEMO.md` for the walkthrough and `docs/DEMO-POLISH.md` for lane prompts.
 
 ## Decisions made today
 
