@@ -18,11 +18,12 @@ Last updated: 2026-11-21 13:55 EST by Antigravity
 | agent-backend/ | Antigravity | live |
 | companion-screen/ | Claude Code (`claude` installed 12:36) | unclaimed |
 | device/ | Codex (PlatformIO + M5Unified, `pio` installed 12:38) | unclaimed |
-| eval/ (inside agent-backend) | Antigravity | live (seed smoke + hosted Managed Agent verified; awaiting attendee utterances P8) |
+| eval/ (inside agent-backend) | Antigravity | live (verified with hosted Managed Agent sandbox) |
 | docs, pitch, video, STATE | Tolu + AdaL | live |
 
 ## Works (verified live)
 
+- 14:00 P7 & P8 resolved: Monday Cartoons Digital Sticker live price confirmed at $0.50 USD (`50` minor units, `$0.54` with tax on Shop MCP checkout); P8 attendee recording walk dropped as unnecessary for Element 119 + Shopify track (`eval/` + hosted Managed Agent audit + live judge queries cover Proof It Works).
 - 13:55 `agent-backend/` live and verified against `scripts/smoke_backend.sh` and `pytest` (`5 passed`):
   - Centralized `MODEL_IDS` in `agent-backend/models.py` (stale `GEMINI_MODEL` removed from `.env.example`).
   - Live API checks passed for `gemini-4-hydrogen`, `gemini-4-neon`, `gemini-decision-1` (`v1beta`), `gemini-3.5-transcribe` (`v1beta`), `gemini-3.8-flash-tts` (`v1beta`), and `antigravity-preview-09-2026` Managed Agent (`v1beta`, `environment="remote"`).
