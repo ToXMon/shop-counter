@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 Digital Sticker checkout works by exact variant
+
+- Symptom: Global Catalog searches did not return the sticker, although its merchant page exists.
+- Cause: Search results, storefront inventory, and exact-variant checkout are separate checks. The reason the sticker did not surface in search is unconfirmed.
+- Fix: Verify the exact variant and live price on the merchant storefront. Send the variant to Shop MCP only on buy intent. A returned handoff with a contact warning is for review on the phone, not proof of payment.
+
 ## 2026-11-21 12:12 Catalog search works with zero credentials
 
 - Symptom: unsure whether shop.dev search needs an API key before the vertical slice can start.

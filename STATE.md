@@ -9,7 +9,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 - **17:00 submissions due** (form: https://cerebralvalley.ai/e/gemini-4-nyc/hackathon/submit, needs a 1-minute video).
 - 17:00-18:45 round-one live judging, 3 min demo + 2 min Q&A. 19:00 top six on stage. 20:15 winners.
 - Build-freeze **16:15**. 16:15-16:50 rehearse twice + record the video. 16:50 submit.
-- Wi-Fi `Hackathon` / `hackathon`.
+- Use a private hotspot for hardware integration. See the participant guide for venue Wi-Fi.
 
 ## Owners
 
@@ -23,7 +23,8 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Works (verified live)
 
-- 12:33 Monday Cartoons (the judge's store) is in the Global Catalog with 5 physical products. Variant ids in docs/HACKATHON.md. Digital sticker is not (PENDING P7).
+- Monday Cartoons Digital Sticker is available on the storefront. Shop MCP returned a handoff for its exact variant. Test price was $0.50 before tax; phone scan and $0.99 price are unverified. See `docs/LAUNCH.md` and `PENDING.md` P7.
+- Earlier Global Catalog searches found five physical products but did not return the sticker.
 - 12:30 Remote: https://github.com/ToXMon/shop-counter (public, per rules).
 - 12:12 Catalog `search_catalog`, no key. `scripts/smoke_catalog.sh`.
 - 12:25 `scripts/stub_backend.py` + `scripts/smoke_backend.sh` + `device/smoke_http.sh` all green.
@@ -34,16 +35,11 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Next (ordered)
 
-1. agent-backend chunk 1 (13:15): skeleton, `/utterance` text -> real catalog -> `/state`. smoke passes.
-2. companion-screen chunk 1 (13:15): Vite+React vs stub, one card, flow bar.
-3. device chunk 1 (13:15): `pio` project, Wi-Fi, button -> `/intent`, screen text.
-4. Tolu at 13:00 lunch: collect 20 attendee utterances with budgets for `eval/` (PENDING P8). Phone voice memos are fine.
-5. agent-backend chunk 2 (14:00): Hydrogen constraints + Neon pick. Re-search works typed.
-6. companion-screen chunk 2 (14:00): candidate grid, pick, reasons, QR view.
-7. device chunk 2 (14:30): push-to-talk WAV -> `/utterance`; RFID -> `/intent`.
-8. agent-backend chunk 3-4 (15:15): Decision 1 gates, checkout, redaction, stale_pick.
-9. agent-backend chunk 5-6 (16:15): transcribe/TTS, eval + managed-agent run, REPORT.md, FAILURES.md.
-10. 16:15 freeze. Rehearse. Record 1-min video. Submit 16:50.
+1. Start all three lanes with the copy-paste prompts in `docs/LAUNCH.md`.
+2. Integrate the laptop flow first: exact sticker, displayed offer, intent, then the phone handoff.
+3. Verify the event-key model calls and add the live voice loop. Add CoreS3 audio and RFID after the button works.
+4. Collect consented unrehearsed inputs while the agents build. Keep recordings out of the public repo.
+5. Freeze at 16:15. Rehearse, record the one-minute video, and submit at 16:50.
 
 ## Blocked
 
@@ -53,7 +49,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 - 12:45 Problem statement: Element 119 (voice is the core input), with a 5-Sigma-style eval for Proof It Works. docs/HACKATHON.md.
 - 12:45 Models: Neon (agent), Hydrogen (workers), Decision 1 (gates), 3.5-transcribe, 3.8-flash-tts; Managed Agent runs the eval. docs/INTERFACES.md section 3.
-- 12:45 Demo store product path: Hat $38 -> "under ten" -> "Balance" print $9. Judge pays on his own store. Open-catalog query (espresso) stays for unrehearsed input.
+- Demo: search Monday Cartoons live, then narrow to the Digital Sticker. Use the verified storefront variant and Shop MCP checkout. See `docs/LAUNCH.md` for lane prompts and integration order.
 - 12:38 Repo flipped to public (rule). `scripts/secret_scan.sh` before every push.
 - 12:38 Device: PlatformIO + Arduino + M5Unified.
 - 12:20 Catalog search direct to `catalog.shopify.com` with Shopify's sample profile. Cart/checkout via Shop MCP. Fallback: per-variant `checkout_url` from the catalog.

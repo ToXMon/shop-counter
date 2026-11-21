@@ -4,10 +4,12 @@ Agents: add an item with your recommendation. Tolu: answer inline, then move it 
 
 ## Open
 
-### P7. Demo product: the digital sticker is not in the Global Catalog
-- Verified 12:33 EST: Monday Cartoons has 5 products in the catalog (Hat $38, two Celestial tees $89, Champions tee $99, "Balance" Photo Print $9). The digital sticker is absent. Digital goods are probably not published to the Shop sales channel.
-- Options: (a) demo with Hat -> re-search -> "Balance" print ($9, cheapest, real checkout); (b) ask the judge (store owner) to publish the sticker to the Shop channel and wait for the catalog to pick it up (unknown delay, risky); (c) both: build for (a), try (b) if he is willing.
-- Recommendation: (a) now. Mention (b) to him only if there is time after 15:00. Decide by 13:30.
+### P7. Confirm the demo price and scan the sticker checkout
+- Digital Sticker is available on the storefront. Shop MCP accepted its exact variant and returned a handoff URL.
+- Live observed price: $0.50 USD before tax. The test checkout showed $0.54 total and required buyer contact.
+- Ask the merchant whether to keep the live price or set $0.99. Recheck both surfaces after any change.
+- No phone scan or payment has been verified. Implement the sticker route now; see `docs/LAUNCH.md`.
+
 
 ### P8. Where do the 20 unrehearsed eval utterances come from?
 - "Proof it works" is 25%. Evals made only of examples we wrote are banned.

@@ -13,7 +13,7 @@ Source: https://cerebralvalley.ai/e/gemini-4-nyc/details (logged in). Builder gu
 | 19:00-20:00 | Round two: top six, on stage, same format |
 | 20:15 | Winners |
 
-Wi-Fi: `Hackathon` / `hackathon`. Venue: The Malin Chelsea, 220 W 26th St.
+Venue: The Malin Chelsea, 220 W 26th St. See the participant guide for venue Wi-Fi.
 
 ## Submission needs
 
@@ -86,9 +86,9 @@ The judge owns https://mondaycartoons.com (`monday-cartoons.myshopify.com`, shop
 | Champions T-Shirt | $99.00 | gid://shopify/ProductVariant/47778026520739 |
 | "Balance" Photo Print | $9.00 | gid://shopify/ProductVariant/45772598444195 |
 
-The **digital sticker is not in the Global Catalog** (searched three ways, paged six pages). Digital goods are likely not published to the Shop channel. See PENDING P7.
+Global Catalog searches did not surface Digital Sticker. The storefront returned an available variant, and Shop MCP accepted it for checkout. See `docs/LAUNCH.md` for evidence and `PENDING.md` P7 for the price decision.
 
-Demo script against this store: "Find me something from Monday Cartoons under fifty dollars" -> pick: the Hat, $38 -> "Under ten" -> re-search -> pick: "Balance" Photo Print, $9 -> badge tap -> QR -> judge checks out on his own store. The judge sees his own merchant checkout on his own phone. That is the moment.
+Demo: ask for a Monday Cartoons item, then narrow the request to a digital sticker. Identify the storefront as the sticker source. Tap for intent and scan the QR to review the sticker on the merchant checkout. Show the live price; leave payment to the shopper.
 
 Keep the espresso-machine query as the open-catalog demo for the "unrehearsed input" test: let the judge ask for anything.
 

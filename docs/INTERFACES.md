@@ -10,7 +10,7 @@ Terms are from GLOSSARY.md.
 
 ## 1. agent-backend HTTP API
 
-Base URL: `http://<laptop-ip>:8787`. JSON in, JSON out. CORS open (`*`) for the companion screen. No auth at the hackathon; the backend binds to the LAN only.
+Use `http://127.0.0.1:8787` for the laptop. JSON in, JSON out. The stub has fake data only. For live checkout, keep companion state on loopback with a same-origin UI proxy or an explicit origin allowlist. Never expose checkout-bearing state on the venue LAN. If hardware is on a private hotspot, expose only device routes there and pair them to the active session. See `docs/LAUNCH.md`.
 
 Every response carries `session_id`. One session per shopper. `POST /session/clear` ends it.
 
