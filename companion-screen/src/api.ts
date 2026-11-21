@@ -7,3 +7,13 @@ export async function clearSession(sessionId: string, base = "", fetchFn: typeof
   });
   return (await res.json()).ok === true;
 }
+
+// POST /utterance per docs/INTERFACES.md 1.1. Returns reply.speech; the screen shows no shopper controls for it.
+export async function sendUtterance(sessionId: string | undefined, text: string, base = "", fetchFn: typeof fetch = fetch): Promise<string> {
+  const res = await fetchFn(`${base}/utterance`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ session_id: sessionId, text }),
+  });
+  return (await res.json()).reply?.speech ?? "";
+}

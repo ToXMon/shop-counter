@@ -13,6 +13,8 @@ export interface ScreenProps {
   onSend: (e: FormEvent) => void;
   onClear: () => void;
   devControls: boolean;
+  onTalk?: () => void; // dev fallback mic (?dev)
+  talkStatus?: string;
 }
 
 function productView(card: CardView) {
@@ -52,7 +54,7 @@ function scanView(card: CardView | null, merchant: string, totalText: string, qr
   );
 }
 
-export function Screen({ state, health, text, onText, onSend, onClear, devControls }: ScreenProps) {
+export function Screen({ state, health, text, onText, onSend, onClear, devControls, onTalk, talkStatus }: ScreenProps) {
   const { card, fixtureMode } = cardView(state, health);
   const handoff = handoffView(state, health);
   const qr = handoff && qrSvg(handoff.continueUrl);
@@ -72,6 +74,8 @@ export function Screen({ state, health, text, onText, onSend, onClear, devContro
     devControls && h("form", { className: "dev", onSubmit: onSend },
       h("input", { value: text, onChange: (e) => onText(e.target.value), placeholder: "Type a request", "aria-label": "Request" }),
       h("button", { type: "submit" }, "Send"),
+      onTalk && h("button", { type: "button", onClick: onTalk }, "Talk"),
+      talkStatus && h("span", { className: "talk-status", role: "status" }, talkStatus),
     ),
   );
 }

@@ -107,3 +107,14 @@ test("live: a handoff without offer_ids never shows a QR", () => {
 test("live: matching offer_ids on pick and handoff show the QR", () => {
   assert.match(render(liveState, false, liveHealth), /data-testid="handoff-qr"/);
 });
+
+test("dev mode offers a Talk button with its status; the default display shows neither", () => {
+  const dev = renderToStaticMarkup(
+    createElement(Screen, { state: fixtureState as never, health: stubHealth, text: "", onText: () => {}, onSend: () => {}, onClear: () => {},
+      devControls: true, onTalk: () => {}, talkStatus: "Listening…" }),
+  );
+  assert.match(dev, /<button[^>]*>Talk<\/button>/);
+  assert.match(dev, /Listening…/);
+  const shopper = render(fixtureState);
+  assert.ok(!shopper.includes(">Talk<") && !shopper.includes("Listening"), "shoppers get no mic controls");
+});
