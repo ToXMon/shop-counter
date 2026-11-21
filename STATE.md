@@ -2,7 +2,7 @@
 
 Living status. Update it when you start or finish a chunk. Newest at the top of each list.
 
-Last updated: 2026-11-21 13:55 EST by Antigravity
+Last updated: 2026-11-21 14:36 EST by Antigravity
 
 ## Clock (confirmed from the participant guide)
 
@@ -23,6 +23,8 @@ Last updated: 2026-11-21 13:55 EST by Antigravity
 
 ## Works (verified live)
 
+- 14:36 Live backend running on `http://127.0.0.1:8788` alongside shared stub on `http://127.0.0.1:8787`; live companion-screen preview running on `http://127.0.0.1:5174/` displaying the fresh Monday Cartoons Digital Sticker QR (`session_id: s_ca99bb83`, `offer_id: monday-cartoons.myshopify.com:gid://shopify/ProductVariant/68033173323939:50`, `$0.54` total with tax, ready for Tolu's phone scan).
+- 14:36 Offer-bound `/intent` seam tested with TDD (`test_offer_binding_seam.py`) and two-axis Code Review (Standards + Spec): rejects missing or stale offer references (`stale_pick`), invalidates old handoff on same-seller item change (Monday Cartoons Hat -> Monday Cartoons Digital Sticker), and restricts `GET /state` (`403`) to loopback.
 - 14:00 P7 & P8 resolved: Monday Cartoons Digital Sticker live price confirmed at $0.50 USD (`50` minor units, `$0.54` with tax on Shop MCP checkout); P8 attendee recording walk dropped as unnecessary for Element 119 + Shopify track (`eval/` + hosted Managed Agent audit + live judge queries cover Proof It Works).
 - 13:55 `agent-backend/` live and verified against `scripts/smoke_backend.sh` and `pytest` (`5 passed`):
   - Centralized `MODEL_IDS` in `agent-backend/models.py` (stale `GEMINI_MODEL` removed from `.env.example`).
@@ -54,6 +56,7 @@ Last updated: 2026-11-21 13:55 EST by Antigravity
 
 ## Decisions made today
 
+- 14:36 Offer-binding & pairing contract: canonical `offer_id` is `<seller.domain>:<variant_id>:<price_minor>` (e.g. `monday-cartoons.myshopify.com:gid://shopify/ProductVariant/68033173323939:50`), returned in `POST /utterance` (`reply.offer_id`), `GET /state` (`pick.offer_id`, `handoff.offer_id`), and `GET /session/offer` (`offer_id`). `POST /intent` requires `offer_id` (or `product_id`/`variant_id` matching the current pick) and rejects missing or stale references (`handoff.status = "stale_pick"`). `GET /state` is restricted to Mac loopback (`127.0.0.1`/`::1`/`localhost`).
 - 12:45 Problem statement: Element 119 (voice is the core input), with a 5-Sigma-style eval for Proof It Works. docs/HACKATHON.md.
 - 12:45 Models: Neon (agent), Hydrogen (workers), Decision 1 (gates), 3.5-transcribe, 3.8-flash-tts; Managed Agent runs the eval. docs/INTERFACES.md section 3.
 - Demo: search Monday Cartoons live, then narrow to the Digital Sticker. Use the verified storefront variant and Shop MCP checkout. See `docs/LAUNCH.md` for lane prompts and integration order.
