@@ -35,7 +35,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: Await live pairing and audio-capable backend integration - Codex
+- device: Polish CoreS3 status and control labels; await live pairing contract - Codex
 
 ## Next (ordered)
 
