@@ -41,6 +41,7 @@ Last updated: 2026-11-21 15:18 EST by Antigravity
 
 ## In flight
 
+- companion-screen: in-store display (direction A), QR bound to offer_id, stale-response guard after Clear, dev push-to-talk (a7327b4). 23 tests pass. Mac build last verified at 28b3ccd; rerun on a7327b4. Live QR check against :8788 still open. Not merged. - Claude Code - 15:15
 - (claim here: `- module: chunk - tool - HH:MM`)
 
 ## Next (ordered)

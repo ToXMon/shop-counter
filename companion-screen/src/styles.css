@@ -1,0 +1,64 @@
+/* In-store product display + scan-to-pay terminal. One accent, no gradients, no nested cards. */
+:root {
+  --ink: #0e1520;
+  --muted: #55606e;
+  --ground: #f2f5f8;
+  --white: #fff;
+  --accent: #1a56f0;
+  --gap: clamp(20px, 3vw, 48px);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--ground); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+img, svg { max-width: 100%; display: block; }
+
+.stage { min-height: 100vh; padding: var(--gap); display: flex; flex-direction: column; gap: var(--gap); }
+
+.bar { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+.brand { font-weight: 650; font-size: 20px; letter-spacing: 0.01em; }
+.chip { font-size: 17px; padding: 4px 12px; border: 1px solid var(--ink); border-radius: 999px; }
+.chip::before { content: "◇ "; }
+.chip.offline { border-color: #c4261d; color: #c4261d; }
+.clear { margin-left: auto; font: inherit; font-size: 16px; color: var(--muted); background: none; border: 0; padding: 8px 4px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Product view */
+.product { flex: 1; display: flex; align-items: center; gap: var(--gap); min-width: 0; animation: rise 220ms ease-out; }
+.art { flex: 0 1 46%; min-width: 0; aspect-ratio: 1; object-fit: cover; border-radius: 20px; background: var(--white); }
+.info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.title, .scan-title { text-wrap: balance; }
+.title { margin: 0; font-size: clamp(32px, 3.6vw, 56px); line-height: 1.1; font-weight: 650; }
+.price { margin: 0; font-size: clamp(56px, 8vw, 120px); line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+.seller { margin: 0; font-size: 24px; color: var(--muted); }
+.reason { margin: 0; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.3; }
+.hint { margin: 8px 0 0; align-self: flex-start; font-size: clamp(22px, 2.2vw, 30px); font-weight: 600; color: var(--white); background: var(--accent); padding: 12px 24px; border-radius: 999px; }
+
+/* Scan view */
+.scan { flex: 1; display: flex; align-items: center; gap: var(--gap); min-width: 0; animation: rise 220ms ease-out; }
+.qrframe { flex: 0 1 min(52vw, 72vh); min-width: 0; aspect-ratio: 1; background: var(--white); border-radius: 24px; overflow: hidden; }
+.qr { width: 100%; height: 100%; }
+.scaninfo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.scan-title { margin: 0; font-size: clamp(40px, 5.2vw, 84px); line-height: 1.05; font-weight: 700; }
+.scan-merchant { margin: 0; font-size: clamp(26px, 2.8vw, 40px); font-weight: 600; font-variant-numeric: tabular-nums; }
+.scan-note { margin: 0; font-size: 22px; color: var(--muted); }
+.summary { display: flex; align-items: center; gap: 16px; margin-top: 16px; font-size: 22px; color: var(--muted); }
+.thumb { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; flex: none; }
+
+.empty { margin: auto; font-size: clamp(32px, 4vw, 56px); color: var(--muted); text-align: center; }
+
+/* Dev-only typed input (?dev). Quiet, bottom of the page. */
+.dev { display: flex; gap: 8px; max-width: 560px; }
+.dev input { flex: 1; min-width: 0; font: inherit; font-size: 18px; padding: 10px 12px; border: 1px solid #b7c0cb; border-radius: 8px; background: var(--white); color: inherit; }
+.dev button { font: inherit; font-size: 18px; padding: 10px 18px; border: 0; border-radius: 8px; background: var(--ink); color: var(--white); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .product, .scan { animation: none; } }
+
+/* Phone width: stack, QR first in the scan view */
+@media (max-width: 760px) {
+  .product, .scan { flex-direction: column; align-items: stretch; }
+  .art { flex: none; width: 100%; height: min(30vh, 260px); aspect-ratio: auto; }
+  .qrframe { flex: none; width: min(100%, 70vh); align-self: center; }
+  .price { font-size: 56px; }
+  .scan-title { font-size: 40px; }
+}
+.talk-status { align-self: center; font-size: 16px; color: var(--muted); }
