@@ -1,0 +1,39 @@
+# secrets
+.env
+.env.*
+!.env.example
+device/secrets.h
+device/secrets.py
+*.pem
+*.key
+
+# vendored reference repos (re-clone with scripts/vendor.sh)
+_vendor/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node
+node_modules/
+dist/
+.vite/
+
+# firmware build output
+device/build/
+device/.pio/
+*.bin
+*.elf
+
+# os / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# recordings and large media (keep the backup demo video out of git; link it in STATE.md)
+*.mov
+*.mp4
+*.wav
