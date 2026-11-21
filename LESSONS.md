@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 Hotspot name capitalization
+
+- Symptom: CoreS3 could not find the hotspot while the laptop was connected.
+- Cause: The saved Wi-Fi name had the wrong capitalization.
+- Fix: Match the broadcast name exactly. Wi-Fi names are case-sensitive.
+
 ## 2026-11-21 CoreS3 virtual button height
 
 - Symptom: The on-screen button did not respond to touch.

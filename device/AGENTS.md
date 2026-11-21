@@ -38,5 +38,6 @@ Barcode scan -> on-device STT -> RFID (keep button) -> on-device TTS (keep scree
 
 ## Current checkpoint
 
-The button client uses manual USB session pairing for stub testing only.
+The button sent intent to the stub on CoreS3 hardware.
+It uses manual USB session pairing for stub testing only.
 See `device/README.md` for setup and its live-pairing limitation.

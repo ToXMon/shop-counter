@@ -23,7 +23,7 @@ Last updated: 2026-11-21 by Codex
 
 ## Works (verified live)
 
-- Device firmware compiled and uploaded to the confirmed CoreS3. Laptop stub smoke passed.
+- CoreS3 touch sent intent for a paired stub offer over the iPhone hotspot. Laptop smoke passed.
 
 - Monday Cartoons Digital Sticker is available on the storefront. Shop MCP returned a handoff for its exact variant. Test price was $0.50 before tax; phone scan and $0.99 price are unverified. See `docs/LAUNCH.md` and `PENDING.md` P7.
 - Earlier Global Catalog searches found five physical products but did not return the sticker.
@@ -33,7 +33,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: CoreS3 button intent and laptop stub smoke - Codex - in progress
+- device: push-to-talk WAV capture after verified stub intent - Codex - in progress
 
 ## Next (ordered)
 
@@ -45,7 +45,6 @@ Last updated: 2026-11-21 by Codex
 
 ## Blocked
 
-- device: The CoreS3 reports the iPhone hotspot is not found. Touch registers.
 - device: Live session pairing and offer revision need an agreed protocol. Manual USB pairing is for the stub only.
 
 ## Decisions made today
