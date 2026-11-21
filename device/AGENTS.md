@@ -39,5 +39,7 @@ Barcode scan -> on-device STT -> RFID (keep button) -> on-device TTS (keep scree
 ## Current checkpoint
 
 The button sent intent to the stub on CoreS3 hardware.
+A test receiver accepted 16 kHz mono WAV from the microphone.
+The current stub does not parse audio.
 It uses manual USB session pairing for stub testing only.
 See `device/README.md` for setup and its live-pairing limitation.

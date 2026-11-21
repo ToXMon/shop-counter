@@ -1,6 +1,6 @@
 # CoreS3 button checkpoint
 
-The button client is for the stub checkpoint. Pairing is manual and temporary.
+The button and audio client is for the stub checkpoint. Pairing is manual and temporary.
 Do not use it with live checkout until the team agrees on pairing and offer revision.
 The device never requests state or receives a handoff URL.
 
@@ -13,7 +13,11 @@ The device never requests state or receives a handoff URL.
 7. Open the serial monitor at 115200 baud and send `session <session_id>`.
 8. Press the bottom-centre touch button marked TAP TO BUY.
 9. Check the device says Sent and the stub receives `POST /intent`.
-10. Clear the stub session between shoppers and restart the device.
+10. Hold the bottom-left touch area to record up to five seconds.
+11. Release to send a 16 kHz mono WAV to `/utterance`.
+12. Clear the stub session between shoppers and restart the device.
+
+The existing stub does not parse audio. Use an audio-capable test receiver or backend.
 
 The stub must be reachable at the laptop IP on the private hotspot. Its state route
 is unauthenticated, so use fake data only. Do not expose it on venue Wi-Fi.
