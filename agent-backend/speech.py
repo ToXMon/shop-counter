@@ -41,7 +41,7 @@ async def transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/wav") -> 
         raise
 
 
-def _tts_sync(text: str, voice: str = "Kore") -> tuple[str | None, str]:
+def _tts_sync(text: str, voice: str = "Sulafat") -> tuple[str | None, str]:
     beta_client = models.get_beta_client()
     interaction = beta_client.interactions.create(
         model=models.TTS_MODEL,
@@ -71,7 +71,7 @@ def _tts_sync(text: str, voice: str = "Kore") -> tuple[str | None, str]:
     return None, "audio/wav"
 
 
-async def synthesize_speech(text: str, voice: str = "Kore") -> dict[str, str | None]:
+async def synthesize_speech(text: str, voice: str = "Sulafat") -> dict[str, str | None]:
     """Synthesize spoken reply to WAV base64 with `gemini-3.8-flash-tts`."""
     if not text or not text.strip():
         return {"audio_b64": None, "mime_type": "audio/wav"}
