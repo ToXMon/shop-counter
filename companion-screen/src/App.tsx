@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { clearSession } from "./api.ts";
 import { Screen } from "./Screen.ts";
 import type { Health, SessionState } from "./view.ts";
 
@@ -50,5 +51,14 @@ export function App() {
     await refresh(sid.current);
   }
 
-  return <Screen state={state} health={health} text={text} onText={setText} onSend={send} />;
+  async function clear(): Promise<void> {
+    if (!sid.current) return;
+    await clearSession(sid.current, BACKEND);
+    // Drop everything shown right away, including any QR, then pick up the fresh session.
+    sid.current = undefined;
+    setState(null);
+    await refresh();
+  }
+
+  return <Screen state={state} health={health} text={text} onText={setText} onSend={send} onClear={clear} />;
 }

@@ -13,3 +13,7 @@ header { display: flex; align-items: center; gap: 16px; }
 form { display: flex; gap: 12px; }
 input { flex: 1; font-size: 22px; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1c1c1c; color: inherit; }
 button { font-size: 22px; padding: 12px 24px; border-radius: 8px; border: 0; background: #4f8cff; color: #fff; }
+.handoff { display: flex; align-items: center; gap: 24px; background: #1c1c1c; border-radius: 16px; padding: 24px; margin: 0 0 24px; }
+.qr { width: 280px; height: 280px; border-radius: 8px; }
+.scan { font-size: 32px; font-weight: 700; margin: 0 0 8px; }
+.clear { margin-left: auto; background: #444; }
