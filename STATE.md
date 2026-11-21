@@ -2,7 +2,7 @@
 
 Living status. Update it when you start or finish a chunk. Newest at the top of each list.
 
-Last updated: 2026-11-21 12:45 EST by AdaL
+Last updated: 2026-11-21 13:55 EST by Antigravity
 
 ## Clock (confirmed from the participant guide)
 
@@ -15,14 +15,20 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 | Module | Owner tool | Status |
 | --- | --- | --- |
-| agent-backend/ | Antigravity | active |
+| agent-backend/ | Antigravity | live |
 | companion-screen/ | Claude Code (`claude` installed 12:36) | unclaimed |
 | device/ | Codex (PlatformIO + M5Unified, `pio` installed 12:38) | unclaimed |
-| eval/ (inside agent-backend) | Antigravity, after chunk 4 | unclaimed |
+| eval/ (inside agent-backend) | Antigravity | live (seed smoke + hosted Managed Agent verified; awaiting attendee utterances P8) |
 | docs, pitch, video, STATE | Tolu + AdaL | live |
 
 ## Works (verified live)
 
+- 13:55 `agent-backend/` live and verified against `scripts/smoke_backend.sh` and `pytest` (`5 passed`):
+  - Centralized `MODEL_IDS` in `agent-backend/models.py` (stale `GEMINI_MODEL` removed from `.env.example`).
+  - Live API checks passed for `gemini-4-hydrogen`, `gemini-4-neon`, `gemini-decision-1` (`v1beta`), `gemini-3.5-transcribe` (`v1beta`), `gemini-3.8-flash-tts` (`v1beta`), and `antigravity-preview-09-2026` Managed Agent (`v1beta`, `environment="remote"`).
+  - Typed Monday Cartoons search -> narrow to Digital Sticker (`gid://shopify/ProductVariant/68033173323939`, live storefront price `50` minor units) -> Shop MCP checkout handoff (`total_minor=54`, `status=incomplete`, buyer contact required on phone) -> `stale_pick` invalidation -> `/session/clear`.
+  - Push-to-talk voice loop verified end-to-end: WAV audio -> `gemini-3.5-transcribe` -> Decision 1 clarification/routing gate -> Hydrogen constraints -> live Shopify lookup -> Hydrogen parallel summaries -> Decision 1 candidate rubric -> Neon pick & speech (`<=45` words) -> Decision 1 self-check -> `gemini-3.8-flash-tts` WAV output.
+  - Off-path Managed Agent (`eval/managed.py`) completed in Google-hosted sandbox (`interaction_id`: `v1_Chc1LWdCYThxWkRLMmhvX1VQdmJTOGlRYxIXNS1nQmE4cVpESzJob19VUHZiUzhpUWM`, `environment_id`: `5d9190371e82a4026621854813262c66`).
 - Monday Cartoons Digital Sticker is available on the storefront. Shop MCP returned a handoff for its exact variant. Test price was $0.50 before tax; phone scan and $0.99 price are unverified. See `docs/LAUNCH.md` and `PENDING.md` P7.
 - Earlier Global Catalog searches found five physical products but did not return the sticker.
 - 12:30 Remote: https://github.com/ToXMon/shop-counter (public, per rules).
@@ -31,7 +37,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
-- agent-backend: models, sticker + live catalog lookup, Shop MCP checkout, Gemini pipeline, PTT voice, eval - Antigravity - 13:27
+- (claim here: `- module: chunk - tool - HH:MM`)
 
 ## Next (ordered)
 
