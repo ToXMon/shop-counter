@@ -43,10 +43,10 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Blocked
 
-- The Mac preview still uses the fixture backend. The live backend and screen have not passed a joint phone checkout.
-- The CoreS3 can send touch intent and a WAV in separate bench tests. Live pairing and offer-bound intent are not yet verified. The current firmware displays reply text; plan on Mac playback unless board playback is proven.
-- At 14:15 ET, all three worktrees were clean. Backend `e45102e` includes the price and evaluation scope decisions. Screen `e9b3479` passed the Mac build and nine tests. Device `696f8b5` records the RFID demo-tag test against the stub.
-- Port 5173 still reached the stub. No live backend answered the health check on port 8788. See `docs/DEMO.md` for the walkthrough and `docs/DEMO-POLISH.md` for lane prompts.
+- Tolu verified the Monday Cartoons phone checkout on the working demo and stopped before payment.
+- The candidate preview and backend answered health checks. The device proxy was not listening on port 8790 at the last check. Rehearse once on a reachable setup rather than running more latency benchmarks.
+- Public `main` still lagged the local build branches at 15:46 ET. Review and publish the demo code before submitting the repository link.
+- See `.handoffs/HANDOFF-2026-11-21-1544.md` for device takeover and `docs/SUBMISSION.md` for the inspected form and paste-ready answers.
 
 ## Decisions made today
 
