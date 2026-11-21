@@ -16,7 +16,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 | Module | Owner tool | Status |
 | --- | --- | --- |
 | agent-backend/ | Antigravity | unclaimed |
-| companion-screen/ | Claude Code (`claude` installed 12:36) | unclaimed |
+| companion-screen/ | Claude Code (`claude` installed 12:36) | claimed 13:25 (build/screen) |
 | device/ | Codex (PlatformIO + M5Unified, `pio` installed 12:38) | unclaimed |
 | eval/ (inside agent-backend) | Antigravity, after chunk 4 | unclaimed |
 | docs, pitch, video, STATE | Tolu + AdaL | live |
@@ -31,6 +31,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
+- companion-screen: chunk 1 skeleton (typed request -> one product card, fixture-labelled) - Claude Code - 13:25
 - (claim here: `- module: chunk - tool - HH:MM`)
 
 ## Next (ordered)
