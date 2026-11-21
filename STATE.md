@@ -2,7 +2,7 @@
 
 Living status. Update it when you start or finish a chunk. Newest at the top of each list.
 
-Last updated: 2026-11-21 12:45 EST by AdaL
+Last updated: 2026-11-21 by Codex
 
 ## Clock (confirmed from the participant guide)
 
@@ -17,11 +17,13 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 | --- | --- | --- |
 | agent-backend/ | Antigravity | unclaimed |
 | companion-screen/ | Claude Code (`claude` installed 12:36) | unclaimed |
-| device/ | Codex (PlatformIO + M5Unified, `pio` installed 12:38) | unclaimed |
+| device/ | Codex (PlatformIO + M5Unified) | in progress |
 | eval/ (inside agent-backend) | Antigravity, after chunk 4 | unclaimed |
 | docs, pitch, video, STATE | Tolu + AdaL | live |
 
 ## Works (verified live)
+
+- Device firmware compiled and uploaded to the confirmed CoreS3. Laptop stub smoke passed.
 
 - Monday Cartoons Digital Sticker is available on the storefront. Shop MCP returned a handoff for its exact variant. Test price was $0.50 before tax; phone scan and $0.99 price are unverified. See `docs/LAUNCH.md` and `PENDING.md` P7.
 - Earlier Global Catalog searches found five physical products but did not return the sticker.
