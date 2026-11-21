@@ -21,9 +21,11 @@ const fixtureState = {
 };
 const stubHealth = { ok: true, catalog: "stub", gemini: "stub" };
 
-function render(state: unknown, devControls = false) {
+const liveHealth = { ok: true, catalog: "ok", gemini: "ok" };
+
+function render(state: unknown, devControls = false, health = stubHealth) {
   return renderToStaticMarkup(
-    createElement(Screen, { state: state as never, health: stubHealth, text: "", onText: () => {}, onSend: () => {}, onClear: () => {}, devControls }),
+    createElement(Screen, { state: state as never, health, text: "", onText: () => {}, onSend: () => {}, onClear: () => {}, devControls }),
   );
 }
 
@@ -31,7 +33,7 @@ test("a valid fixture handoff shows a locally generated QR, never the link", () 
   const html = render(fixtureState);
   assert.match(html, /data-testid="handoff-qr"/);
   assert.match(html, /<svg/);
-  assert.match(html, /Scan to review and pay/);
+  assert.match(html, /Scan to review and pay on your phone\./);
   assert.match(html, /Whole Latte Love/);
   assert.match(html, /Fixture mode/);
   assert.ok(!html.includes(FAKE_URL), "continue_url must not appear in the markup");
@@ -74,10 +76,34 @@ test("the product view shows one short reason and tells the shopper what to do n
   assert.match(html, /Only one under \$300 with a 15-bar pump/);
   assert.ok(!html.includes("Steam wand for milk drinks"), "only the first reason is shown");
   assert.ok(!html.includes("4.6 stars from 128 reviews"), "only the first reason is shown");
-  assert.match(html, /Tap the device to buy/);
+  assert.match(html, /Tap the center of the device screen to open checkout\./);
 });
 
 test("the typed request box is a dev tool: absent by default, present with dev controls", () => {
   assert.ok(!render(fixtureState).includes("<input"), "shoppers get no second set of controls");
   assert.match(render(fixtureState, true), /<input/);
+});
+
+// Live mode: the QR is bound to the offer by pick.offer_id === handoff.offer_id (contract: build/backend 9c452a0).
+const OFFER_1 = "shop.example.test:variant-1:19900";
+const OFFER_2 = "shop.example.test:variant-2:13999";
+const liveState = {
+  ...fixtureState,
+  pick: { ...fixtureState.pick, offer_id: OFFER_1 },
+  handoff: { ...fixtureState.handoff, offer_id: OFFER_1 },
+};
+
+test("live: a same-seller offer change hides the old QR", () => {
+  // Same merchant, but the shopper moved to another item from that seller. Only the offer_id differs.
+  const changed = { ...liveState, pick: { ...liveState.pick, offer_id: OFFER_2 } };
+  assert.ok(!render(changed, false, liveHealth).includes('data-testid="handoff-qr"'));
+});
+
+test("live: a handoff without offer_ids never shows a QR", () => {
+  const legacy = { ...fixtureState }; // no offer_id on pick or handoff
+  assert.ok(!render(legacy, false, liveHealth).includes('data-testid="handoff-qr"'));
+});
+
+test("live: matching offer_ids on pick and handoff show the QR", () => {
+  assert.match(render(liveState, false, liveHealth), /data-testid="handoff-qr"/);
 });

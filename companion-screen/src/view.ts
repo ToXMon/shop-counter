@@ -13,7 +13,7 @@ export interface SessionState {
   session_id: string;
   phase: string;
   candidates: Candidate[];
-  pick: { product_id: string; reasons: string[] } | null;
+  pick: { product_id: string; reasons: string[]; offer_id?: string } | null;
   handoff?: Handoff | null;
 }
 
@@ -23,6 +23,7 @@ export interface Handoff {
   merchant: string | null;
   total_minor: number | null;
   currency: string;
+  offer_id?: string;
 }
 
 export interface Health {
@@ -49,9 +50,13 @@ export function formatPrice(minor: number, currency: string): string {
   return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(minor / 100);
 }
 
+// The stub backend reports "stub". Unknown health (offline) counts as live, so we fail closed.
+export function isFixtureMode(health: Health | null): boolean {
+  return health?.catalog === "stub" || health?.gemini === "stub";
+}
+
 export function cardView(state: SessionState | null, health: Health | null): View {
-  // The stub backend reports "stub". Say so on screen, so nobody mistakes fixtures for live data.
-  const fixtureMode = health?.catalog === "stub" || health?.gemini === "stub";
+  const fixtureMode = isFixtureMode(health);
   const pick = state?.candidates.find((c) => c.is_pick) ?? null;
   if (!state || !pick) return { card: null, fixtureMode };
   return {
@@ -72,14 +77,24 @@ export interface HandoffView {
   continueUrl: string; // goes to the QR encoder only; never render or log it
 }
 
-export function handoffView(state: SessionState | null): HandoffView | null {
+export function handoffView(state: SessionState | null, health: Health | null): HandoffView | null {
   const h = state?.handoff;
   if (!h || h.status !== "ready" || !h.continue_url?.startsWith("https://")) return null;
   if (h.merchant === null || h.total_minor === null) return null;
-  // Defense in depth: the backend clears the handoff when the offer changes, but if a stale one
-  // slips through, never show its QR next to a different seller's pick. Price is not compared
-  // because the checkout total includes tax.
   const pick = state?.candidates.find((c) => c.is_pick);
-  if (!pick || pick.seller.name !== h.merchant) return null;
+  if (!pick) return null;
+
+  const pickOffer = state?.pick?.offer_id;
+  if (pickOffer && h.offer_id) {
+    // Bound to the displayed offer. This also catches a same-seller item change.
+    if (pickOffer !== h.offer_id) return null;
+  } else if (!isFixtureMode(health)) {
+    // Live checkout needs both IDs. Never show a QR we cannot tie to the displayed offer.
+    return null;
+  } else if (pick.seller.name !== h.merchant) {
+    // Legacy fixture payloads have no offer_id. Fixture mode only: match on merchant. Price is not
+    // compared because a real checkout total includes tax.
+    return null;
+  }
   return { merchant: h.merchant, totalText: formatPrice(h.total_minor, h.currency), continueUrl: h.continue_url };
 }

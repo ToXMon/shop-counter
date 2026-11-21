@@ -23,7 +23,7 @@ function productView(card: CardView) {
       h("p", { className: "price", "data-testid": "price" }, card.priceText),
       h("p", { className: "seller" }, card.sellerName),
       card.reason && h("p", { className: "reason" }, card.reason),
-      h("p", { className: "hint" }, "Tap the device to buy"),
+      h("p", { className: "hint" }, "Tap the center of the device screen to open checkout."),
     ),
   );
 }
@@ -41,9 +41,9 @@ function scanView(card: CardView | null, merchant: string, totalText: string, qr
       ),
     ),
     h("div", { className: "scaninfo" },
-      h("h1", { className: "scan-title" }, "Scan to review and pay"),
+      h("h1", { className: "scan-title" }, "Scan to review and pay on your phone."),
       h("p", { className: "scan-merchant" }, `${merchant} · ${totalText}`),
-      h("p", { className: "scan-note" }, "Check the merchant and total on your phone."),
+      h("p", { className: "scan-note" }, "Check the merchant and total before you pay."),
       card && h("div", { className: "summary", "data-testid": "offer-summary" },
         card.imageUrl && h("img", { className: "thumb", src: card.imageUrl, alt: "" }),
         h("span", null, `${card.title} · ${card.priceText}`),
@@ -54,7 +54,7 @@ function scanView(card: CardView | null, merchant: string, totalText: string, qr
 
 export function Screen({ state, health, text, onText, onSend, onClear, devControls }: ScreenProps) {
   const { card, fixtureMode } = cardView(state, health);
-  const handoff = handoffView(state);
+  const handoff = handoffView(state, health);
   const qr = handoff && qrSvg(handoff.continueUrl);
   return h("main", { className: "stage" },
     h("header", { className: "bar" },
