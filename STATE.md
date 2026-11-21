@@ -15,7 +15,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 | Module | Owner tool | Status |
 | --- | --- | --- |
-| agent-backend/ | Antigravity | unclaimed |
+| agent-backend/ | Antigravity | active |
 | companion-screen/ | Claude Code (`claude` installed 12:36) | unclaimed |
 | device/ | Codex (PlatformIO + M5Unified, `pio` installed 12:38) | unclaimed |
 | eval/ (inside agent-backend) | Antigravity, after chunk 4 | unclaimed |
@@ -31,7 +31,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
-- (claim here: `- module: chunk - tool - HH:MM`)
+- agent-backend: models, sticker + live catalog lookup, Shop MCP checkout, Gemini pipeline, PTT voice, eval - Antigravity - 13:27
 
 ## Next (ordered)
 
