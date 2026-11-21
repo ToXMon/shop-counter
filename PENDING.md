@@ -4,6 +4,11 @@ Agents: add an item with your recommendation. Tolu: answer inline, then move it 
 
 ## Open
 
+### P9. Pair the device to the active offer
+- The API does not define device session pairing or an offer revision.
+- Recommendation: agree on pairing and stale-offer handling before live device intent.
+- USB session entry is limited to fake-data stub testing.
+
 ### P7. Confirm the demo price and scan the sticker checkout
 - Digital Sticker is available on the storefront. Shop MCP accepted its exact variant and returned a handoff URL.
 - Live observed price: $0.50 USD before tax. The test checkout showed $0.54 total and required buyer contact.

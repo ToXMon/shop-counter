@@ -35,3 +35,8 @@ Barcode scan -> on-device STT -> RFID (keep button) -> on-device TTS (keep scree
 ## Smoke
 
 `device/smoke_http.sh` passes against the stub and against the real backend.
+
+## Current checkpoint
+
+The button client uses manual USB session pairing for stub testing only.
+See `device/README.md` for setup and its live-pairing limitation.
