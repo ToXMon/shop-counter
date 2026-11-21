@@ -36,7 +36,7 @@ export interface CardView {
   priceText: string;
   sellerName: string;
   imageUrl?: string;
-  reasons: string[];
+  reason: string | null; // one short reason; the screen is a display, not a spec sheet
 }
 
 export interface View {
@@ -61,7 +61,7 @@ export function cardView(state: SessionState | null, health: Health | null): Vie
       priceText: formatPrice(pick.price_minor, pick.currency),
       sellerName: pick.seller.name,
       imageUrl: pick.image_url,
-      reasons: state.pick?.reasons ?? [],
+      reason: state.pick?.reasons[0] ?? null,
     },
   };
 }

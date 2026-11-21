@@ -21,9 +21,9 @@ const fixtureState = {
 };
 const stubHealth = { ok: true, catalog: "stub", gemini: "stub" };
 
-function render(state: unknown) {
+function render(state: unknown, devControls = false) {
   return renderToStaticMarkup(
-    createElement(Screen, { state: state as never, health: stubHealth, text: "", onText: () => {}, onSend: () => {}, onClear: () => {} }),
+    createElement(Screen, { state: state as never, health: stubHealth, text: "", onText: () => {}, onSend: () => {}, onClear: () => {}, devControls }),
   );
 }
 
@@ -31,9 +31,9 @@ test("a valid fixture handoff shows a locally generated QR, never the link", () 
   const html = render(fixtureState);
   assert.match(html, /data-testid="handoff-qr"/);
   assert.match(html, /<svg/);
-  assert.match(html, /Scan to review and pay on your phone/);
+  assert.match(html, /Scan to review and pay/);
   assert.match(html, /Whole Latte Love/);
-  assert.match(html, /FIXTURE MODE/);
+  assert.match(html, /Fixture mode/);
   assert.ok(!html.includes(FAKE_URL), "continue_url must not appear in the markup");
   assert.ok(!html.includes("fake-handoff-7f3a9c"), "no part of continue_url may appear in the markup");
 });
@@ -55,4 +55,29 @@ test("the QR disappears when the pick changes after the handoff was made", () =>
 
 test("a live session offers a Clear session button", () => {
   assert.match(render(fixtureState), /<button[^>]*>Clear session<\/button>/);
+});
+
+test("after the tap the scan view replaces the product view and keeps a compact offer row", () => {
+  const html = render(fixtureState);
+  assert.match(html, /data-testid="handoff-qr"/);
+  assert.match(html, /data-testid="offer-summary"[^>]*>.*Gaggia Carezza De LUXE Espresso Machine.*\$199\.00/);
+  assert.ok(!html.includes('data-testid="product-card"'), "the large product view must give way to the scan view");
+});
+
+test("the product view shows one short reason and tells the shopper what to do next", () => {
+  const noHandoff = {
+    ...fixtureState,
+    handoff: null,
+    pick: { product_id: "p2", reasons: ["Only one under $300 with a 15-bar pump", "Steam wand for milk drinks", "4.6 stars from 128 reviews"] },
+  };
+  const html = render(noHandoff);
+  assert.match(html, /Only one under \$300 with a 15-bar pump/);
+  assert.ok(!html.includes("Steam wand for milk drinks"), "only the first reason is shown");
+  assert.ok(!html.includes("4.6 stars from 128 reviews"), "only the first reason is shown");
+  assert.match(html, /Tap the device to buy/);
+});
+
+test("the typed request box is a dev tool: absent by default, present with dev controls", () => {
+  assert.ok(!render(fixtureState).includes("<input"), "shoppers get no second set of controls");
+  assert.match(render(fixtureState, true), /<input/);
 });

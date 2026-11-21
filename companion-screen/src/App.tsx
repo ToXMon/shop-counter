@@ -60,5 +60,5 @@ export function App() {
     await refresh();
   }
 
-  return <Screen state={state} health={health} text={text} onText={setText} onSend={send} onClear={clear} />;
+  return <Screen state={state} health={health} text={text} onText={setText} onSend={send} onClear={clear} devControls={new URLSearchParams(window.location.search).has("dev")} />;
 }
