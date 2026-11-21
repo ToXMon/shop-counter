@@ -21,7 +21,7 @@ void show(const String& message) {
 
 void sendIntent() {
   if (session.isEmpty()) { show("Pair session first"); return; }
-  if (WiFi.status() != WL_CONNECTED) { show("Wi-Fi disconnected"); return; }
+  if (WiFi.status() != WL_CONNECTED) { show(String("Wi-Fi status ") + static_cast<int>(WiFi.status()) + "\nRetrying connection"); WiFi.reconnect(); return; }
   JsonDocument request;
   request["session_id"] = session;
   request["type"] = "buy";
@@ -50,6 +50,8 @@ void setup() {
   M5.setTouchButtonHeight(60);
   Serial.begin(115200);
   show("Connecting Wi-Fi");
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   const unsigned long start = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - start < 10000) { M5.update(); delay(20); }
@@ -63,7 +65,7 @@ void loop() {
     line.trim();
     if (line.startsWith("session ")) {
       session = line.substring(8);
-      show(session.isEmpty() ? "Pair session first" : "Session paired");
+      show(session.isEmpty() ? "Pair session first" : (WiFi.status() == WL_CONNECTED ? "Session paired" : String("Paired; Wi-Fi status ") + static_cast<int>(WiFi.status())));
     }
   }
   if (M5.BtnB.wasPressed()) sendIntent();

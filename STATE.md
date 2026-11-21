@@ -45,6 +45,7 @@ Last updated: 2026-11-21 by Codex
 
 ## Blocked
 
+- device: The CoreS3 reports the iPhone hotspot is not found. Touch registers.
 - device: Live session pairing and offer revision need an agreed protocol. Manual USB pairing is for the stub only.
 
 ## Decisions made today
