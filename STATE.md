@@ -25,6 +25,7 @@ Last updated: 2026-11-21 by Codex
 
 - CoreS3 touch sent intent for a paired stub offer over the iPhone hotspot. Laptop smoke passed.
 - CoreS3 push-to-talk sent a valid 16 kHz mono WAV to a local test receiver.
+- RFID 2 and the black demo tag sent badge intent to a paired stub offer.
 
 - Monday Cartoons Digital Sticker is available on the storefront. Shop MCP returned a handoff for its exact variant. Test price was $0.50 before tax; phone scan and $0.99 price are unverified. See `docs/LAUNCH.md` and `PENDING.md` P7.
 - Earlier Global Catalog searches found five physical products but did not return the sticker.
@@ -34,7 +35,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: RFID 2 after verified button and WAV tests - Codex - in progress
+- device: Await live pairing and audio-capable backend integration - Codex
 
 ## Next (ordered)
 
