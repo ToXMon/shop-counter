@@ -46,4 +46,6 @@ USB pairing obtains the offer ID through the device-safe pairing endpoint.
 The hotspot proxy exposes only paired device routes and filters checkout fields.
 The display uses Ready, Listening, Looking it up, and Scan on the Mac.
 RFID remains disabled during live touch validation.
+One live voice turn took 52.1 seconds after the proxy received audio.
+See PENDING.md P10 for backend latency work.
 See `device/README.md` for setup and its live-pairing limitation.

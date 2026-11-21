@@ -4,6 +4,14 @@ Agents: add an item with your recommendation. Tolu: answer inline, then move it 
 
 ## Open
 
+### P10. Reduce live voice latency in the backend
+- One live turn took 52.1 seconds after audio reached the proxy.
+- Observed phases: listening 9.8 s, searching 8.2 s, comparing 25.8 s, final response 8.3 s.
+- Backend owner: honor `include_tts=false` for audio. Mac playback already uses `say`.
+- Route factual pick questions without re-running catalog search and comparison.
+- Keep offer binding, fresh approval, Gemini 4 roles, and Decisions API.
+- Benchmark changes on real inputs. Do not promise a speedup before measuring it.
+
 ### P7. Confirm the demo price and scan the sticker checkout
 - Digital Sticker is available on the storefront. Shop MCP accepted its exact variant and returned a handoff URL.
 - Live observed price: $0.50 USD before tax. The test checkout showed $0.54 total and required buyer contact.

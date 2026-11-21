@@ -2,6 +2,13 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 Live voice phase timing
+
+- Symptom: A CoreS3 voice reply took about 52 seconds after the Mac received audio.
+- Observation: Listening took 9.8 s, searching 8.2 s, comparing 25.8 s, and final response 8.3 s.
+- Cause candidates: The backend runs the full search path for pick questions. It also synthesizes Gemini speech when audio input is present, even with `include_tts=false`.
+- Fix to verify: Route factual pick questions separately and honor the TTS flag. Measure again.
+
 ## 2026-11-21 Live voice can exceed the device timeout
 
 - Symptom: CoreS3 showed an audio error while the backend continued processing.

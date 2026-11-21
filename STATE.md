@@ -35,7 +35,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: Live offer-bound touch verified; asynchronous live voice retry in progress - Codex
+- device: Live voice timing measured; backend latency improvements await backend owner - Codex
 
 ## Next (ordered)
 
@@ -47,7 +47,8 @@ Last updated: 2026-11-21 by Codex
 
 ## Blocked
 
-- device: Live voice retry and phone QR scan remain unverified.
+- device: Phone QR scan remains unverified.
+- backend: Voice latency improvements are outside the device lane; see PENDING.md P10.
 
 ## Decisions made today
 
