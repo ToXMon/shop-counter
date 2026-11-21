@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 Live voice can exceed the device timeout
+
+- Symptom: CoreS3 showed an audio error while the backend continued processing.
+- Cause: Live voice processing exceeded the ten-second HTTP timeout.
+- Fix: The local proxy processes voice asynchronously. The device polls short requests.
+
 ## 2026-11-21 RFID 2 chip identity
 
 - Symptom: The original module notes described RFID 2 as MFRC522.

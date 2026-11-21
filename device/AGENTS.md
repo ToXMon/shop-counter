@@ -23,7 +23,7 @@ Reference builds: OpenAI's "Reflect" (CoreS3 + phone session for audio) at https
 
 ## Hard rules (module-specific)
 
-- The device stores only `session_id`, the backend base URL, and Wi-Fi credentials. Nothing from checkout. It never calls `/state`.
+- The device stores the paired `session_id` and `offer_id` in RAM, plus the backend URL and Wi-Fi credentials. It stores nothing from checkout. It never calls `/state`.
 - Wi-Fi SSID/password in `device/secrets.h` or `device/secrets.py`, gitignored. `device/secrets.example.*` committed.
 - Every HTTP call has a 10 s timeout and shows an error state on screen. Never hang the UI.
 - Button fallback for the badge is first-class, not an afterthought. Label it "Tap to review".
@@ -42,7 +42,8 @@ The button sent intent to the stub on CoreS3 hardware.
 A test receiver accepted 16 kHz mono WAV from the microphone.
 RFID 2 and the black demo tag sent badge intent to the stub.
 The current stub does not parse audio.
-It uses manual USB session pairing for stub testing only.
+USB pairing obtains the offer ID through the device-safe pairing endpoint.
+The hotspot proxy exposes only paired device routes and filters checkout fields.
 The display uses Ready, Listening, Looking it up, and Scan on the Mac.
-The display polish compiled but has not been flashed.
+RFID remains disabled during live touch validation.
 See `device/README.md` for setup and its live-pairing limitation.

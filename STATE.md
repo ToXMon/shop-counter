@@ -35,7 +35,7 @@ Last updated: 2026-11-21 by Codex
 
 ## In flight
 
-- device: Integrate committed offer pairing; verify live voice and touch - Codex
+- device: Live offer-bound touch verified; asynchronous live voice retry in progress - Codex
 
 ## Next (ordered)
 
@@ -47,7 +47,7 @@ Last updated: 2026-11-21 by Codex
 
 ## Blocked
 
-- device: Live session pairing and offer revision need an agreed protocol. Manual USB pairing is for the stub only.
+- device: Live voice retry and phone QR scan remain unverified.
 
 ## Decisions made today
 

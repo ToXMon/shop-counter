@@ -4,11 +4,6 @@ Agents: add an item with your recommendation. Tolu: answer inline, then move it 
 
 ## Open
 
-### P9. Pair the device to the active offer
-- The API does not define device session pairing or an offer revision.
-- Recommendation: agree on pairing and stale-offer handling before live device intent.
-- USB session entry is limited to fake-data stub testing.
-
 ### P7. Confirm the demo price and scan the sticker checkout
 - Digital Sticker is available on the storefront. Shop MCP accepted its exact variant and returned a handoff URL.
 - Live observed price: $0.50 USD before tax. The test checkout showed $0.54 total and required buyer contact.
@@ -21,6 +16,8 @@ Agents: add an item with your recommendation. Tolu: answer inline, then move it 
 - Recommendation: Tolu walks the room at lunch (13:00) with a phone, records 20 attendees each saying one shopping request with a budget. Save as `eval/utterances/*.wav` + a transcript CSV. That is the test set. Takes 20 minutes. Alternative: ask in Discord #general.
 
 ## Resolved
+
+- **P9. Device offer pairing.** Backend commit `5ed8142` defines the session/offer lookup and requires `offer_id` on intent. Live touch was verified. Voice retry remains in flight.
 
 - **P1. Deadline.** Submissions due **17:00**, live judging 17:00-18:45. Build-freeze 16:15, rehearsal + video 16:15-16:50. (Participant guide, 12:32)
 - **P2. Device firmware.** PlatformIO + Arduino + M5Unified for the CoreS3 (`pio` installed 12:38). Reason: M5Unified has the mic, speaker and RFID2 paths in one library; `pio run -t upload` is scriptable for Codex. MicroPython kept as fallback if the audio path fights us by 14:30.
