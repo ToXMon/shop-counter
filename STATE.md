@@ -2,7 +2,7 @@
 
 Living status. Update it when you start or finish a chunk. Newest at the top of each list.
 
-Last updated: 2026-11-21 14:36 EST by Antigravity
+Last updated: 2026-11-21 15:18 EST by Antigravity
 
 ## Clock (confirmed from the participant guide)
 
@@ -23,6 +23,7 @@ Last updated: 2026-11-21 14:36 EST by Antigravity
 
 ## Works (verified live)
 
+- 15:18 Fixed `include_tts=false` on audio input (`cd8bd2e`, `4 passed` in `test_include_tts.py`) and added grounded `question_about_pick` fast-path (`358fffe`, `test_pick_question.py` passed). Replayed the same WAV 3x before (`mean 34.48s` on live `:8788`) vs after (`mean 23.44s` on `:8789`, `tts_ms=0`; `include_tts=true` control `29.48s` with `tts_ms=5554ms`). CoreS3 multipart audio + offer-bound tap-to-QR smoke-tested on `:8789`. Working demo on `:8788` kept untouched during tests.
 - 14:36 Live backend running on `http://127.0.0.1:8788` alongside shared stub on `http://127.0.0.1:8787`; live companion-screen preview running on `http://127.0.0.1:5174/` displaying the fresh Monday Cartoons Digital Sticker QR (`session_id: s_ca99bb83`, `offer_id: monday-cartoons.myshopify.com:gid://shopify/ProductVariant/68033173323939:50`, `$0.54` total with tax, ready for Tolu's phone scan).
 - 14:36 Offer-bound `/intent` seam tested with TDD (`test_offer_binding_seam.py`) and two-axis Code Review (Standards + Spec): rejects missing or stale offer references (`stale_pick`), invalidates old handoff on same-seller item change (Monday Cartoons Hat -> Monday Cartoons Digital Sticker), and restricts `GET /state` (`403`) to loopback.
 - 14:00 P7 & P8 resolved: Monday Cartoons Digital Sticker live price confirmed at $0.50 USD (`50` minor units, `$0.54` with tax on Shop MCP checkout); P8 attendee recording walk dropped as unnecessary for Element 119 + Shopify track (`eval/` + hosted Managed Agent audit + live judge queries cover Proof It Works).
