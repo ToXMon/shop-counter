@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 RFID 2 chip identity
+
+- Symptom: The original module notes described RFID 2 as MFRC522.
+- Cause: RFID and RFID 2 are distinct units. RFID 2 uses WS1850S.
+- Fix: Use the RFID 2 I2C driver on CoreS3 Port A.
+
 ## 2026-11-21 Hotspot name capitalization
 
 - Symptom: CoreS3 could not find the hotspot while the laptop was connected.

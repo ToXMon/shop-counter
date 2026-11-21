@@ -15,8 +15,10 @@ The device never requests state or receives a handoff URL.
 9. Check the device says Sent and the stub receives `POST /intent`.
 10. Hold the bottom-left touch area to record up to five seconds.
 11. Release to send a 16 kHz mono WAV to `/utterance`.
-12. Clear the stub session between shoppers and restart the device.
+12. Connect RFID 2 to red Port A. Present a demo tag for badge intent.
+13. Clear the stub session between shoppers and restart the device.
 
+RFID accepts one badge intent per USB-paired session. It sends no tag ID.
 The existing stub does not parse audio. Use an audio-capable test receiver or backend.
 
 The stub must be reachable at the laptop IP on the private hotspot. Its state route

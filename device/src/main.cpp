@@ -3,6 +3,9 @@
 #include <HTTPClient.h>
 #include <M5Unified.h>
 #include <WiFi.h>
+#include <M5UnitUnifiedRFID.h>
+#include <M5UnitUnifiedNFC.h>
+#include <wiring/m5_unit_unified_wiring.hpp>
 #if __has_include("../secrets.h")
 #include "../secrets.h"
 #else
@@ -10,6 +13,12 @@
 #endif
 
 String session;
+m5::unit::UnitUnified units;
+m5::unit::UnitRFID2 reader;
+m5::nfc::NFCLayerA nfc(reader);
+bool readerReady = false;
+bool badgeSent = false;
+unsigned long lastBadgePoll = 0;
 
 void show(const String& message) {
   M5.Display.clear();
@@ -19,13 +28,13 @@ void show(const String& message) {
   M5.Display.println("\nHOLD bottom left to talk\nTAP bottom centre to buy");
 }
 
-void sendIntent() {
+void sendIntent(const char* source = "button") {
   if (session.isEmpty()) { show("Pair session first"); return; }
   if (WiFi.status() != WL_CONNECTED) { show(String("Wi-Fi status ") + static_cast<int>(WiFi.status()) + "\nRetrying connection"); WiFi.reconnect(); return; }
   JsonDocument request;
   request["session_id"] = session;
   request["type"] = "buy";
-  request["source"] = "button";
+  request["source"] = source;
   String body;
   serializeJson(request, body);
   HTTPClient http;
@@ -134,6 +143,7 @@ void setup() {
   M5.begin(cfg);
   M5.setTouchButtonHeight(60);
   Serial.begin(115200);
+  readerReady = m5::unit::wiring::addI2C(units, reader, 0, m5::unit::wiring::NessoPort::PortA) && units.begin();
   show("Connecting Wi-Fi");
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
@@ -150,7 +160,17 @@ void loop() {
     line.trim();
     if (line.startsWith("session ")) {
       session = line.substring(8);
+      badgeSent = false;
       show(session.isEmpty() ? "Pair session first" : (WiFi.status() == WL_CONNECTED ? "Session paired" : String("Paired; Wi-Fi status ") + static_cast<int>(WiFi.status())));
+    }
+  }
+  if (readerReady && !recording && !badgeSent && !session.isEmpty() && millis() - lastBadgePoll >= 300) {
+    lastBadgePoll = millis();
+    m5::nfc::a::PICC tag;
+    if (nfc.detect(tag, 50)) {
+      nfc.deactivate();
+      badgeSent = true;
+      sendIntent("badge");
     }
   }
   if (!recording && M5.BtnA.wasPressed()) beginRecording();
