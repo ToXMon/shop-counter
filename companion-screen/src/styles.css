@@ -1,0 +1,15 @@
+body { margin: 0; background: #111; color: #f5f5f5; font-family: system-ui, sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px; }
+header { display: flex; align-items: center; gap: 16px; }
+.badge { background: #f5a524; color: #111; padding: 4px 12px; border-radius: 999px; font-weight: 700; }
+.badge.offline { background: #e5484d; color: #fff; }
+.card { display: flex; gap: 24px; background: #1c1c1c; border-radius: 16px; padding: 24px; margin: 24px 0; }
+.card img { width: 240px; height: 240px; object-fit: cover; border-radius: 12px; }
+.title { font-size: 32px; margin: 0 0 8px; }
+.price { font-size: 44px; font-weight: 700; margin: 0 0 8px; }
+.seller { font-size: 20px; color: #aaa; }
+.reason { font-size: 22px; margin: 4px 0; }
+.empty { font-size: 28px; color: #aaa; margin: 48px 0; }
+form { display: flex; gap: 12px; }
+input { flex: 1; font-size: 22px; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #1c1c1c; color: inherit; }
+button { font-size: 22px; padding: 12px 24px; border-radius: 8px; border: 0; background: #4f8cff; color: #fff; }
