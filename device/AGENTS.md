@@ -6,7 +6,11 @@ Owner: see STATE.md (default Codex, or Tolu by hand). Read root AGENTS.md first.
 
 Firmware for the M5Stack CoreS3. A thin client. Spec: docs/INTERFACES.md section 4.
 
-Language: ______ (PENDING P2; fill in on first commit: MicroPython / Arduino + M5Unified / UIFlow 2).
+Language: **PlatformIO + Arduino framework + M5Unified** (decided 12:38, PENDING P2 resolved). `pio` is installed at `~/.local/bin/pio`. `platformio.ini` board: `m5stack-cores3`. Libraries: `m5stack/M5Unified`, `m5stack/M5Unit-RFID` (or the MFRC522 path M5Unified exposes), `bblanchon/ArduinoJson`. Fallback if the audio path is not working by 14:30: UIFlow 2 / MicroPython on the same board.
+
+Hardware on the table (photo, 12:40): M5Stack CoreS3 (main device), M5StickS3 (spare; could be the "badge" or a second button), RFID 2 unit (MFRC522, I2C, Port A), Hat ENV-III, Hat ToF, Unit Gesture, Unit GPS v1.1, a proto/breakout board. Only CoreS3 + RFID 2 are in scope. Everything else is cut from the start.
+
+Reference builds: OpenAI's "Reflect" (CoreS3 + phone session for audio) at https://youcanjustbuildthings.openai.chatgpt.site/projects/official-reflect, and Espressif's realtime ESP32 demo. Both confirm: keep audio capture simple (push-to-talk WAV), let the backend do the intelligence.
 
 ## Build order
 

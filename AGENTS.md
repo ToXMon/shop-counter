@@ -43,7 +43,8 @@ This file is written for Antigravity, Claude Code, and Codex alike. CLAUDE.md po
 - Shopify catalog products go through Shop cart/checkout. Never use spend requests for them; the Shop docs say spend requests are for non-Shopify stores and are not a fallback for failed Shop checkout.
 - Shop checkout can be created without shopper sign-in. Hand it to the shopper with the returned `continue_url` so they review and pay on their phone. Keep anything credential-bearing on the backend, never on the device.
 - x402 is out of the MVP. A testnet-only stretch goal at most, and only after the demo works end to end.
-- This repo stays private.
+- This repo is **public** (hackathon rule: https://github.com/ToXMon/shop-counter). Run `scripts/secret_scan.sh` before every push. A leaked key means rotate it first, then rewrite history.
+- Hackathon hard requirements (docs/HACKATHON.md): at least two Gemini 4 models with distinct jobs plus the Decisions API; voice central, not a text box; the companion screen is never "the main feature"; no mocked model responses in the demo; eval inputs must include utterances we did not write.
 
 ## Parallel work rules
 

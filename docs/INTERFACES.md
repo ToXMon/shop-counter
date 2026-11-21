@@ -185,19 +185,47 @@ If `create_checkout` fails at demo time, the Catalog's per-variant `checkout_url
 
 ---
 
-## 3. agent-backend -> Gemini
+## 3. agent-backend -> Gemini (two Gemini 4 models + Decisions API, per the hackathon rules)
 
-Managed agent via the Interactions API with three tools. Tool names and argument shapes are fixed so the agent prompt and the tool code can be written by different sessions.
+Model IDs come from `docs/GEMINI4_BUILDER_GUIDE.pdf`. Keep them in one module, `agent-backend/models.py`, never inline.
+
+```
+utterance (WAV or text)
+  -> [gemini-3.5-transcribe]            WAV -> text                      (skip if text came in)
+  -> [gemini-decision-1]  GATE 1        "Is this a new/changed shopping constraint, a buy intent,
+                                         a question about the pick, or other?"  choice + confidence
+  -> [gemini-4-hydrogen]  WORKER        parse constraints -> {query, budget_max_minor, must_have[]}   (structured output)
+  -> shop_search tool (Catalog API)     candidates[]
+  -> [gemini-4-hydrogen] x N in parallel  one call per candidate: fit summary (2 lines) from title+description+price
+  -> [gemini-decision-1]  SCORE         rubric per candidate: "How well does this satisfy the constraints?"  0..1
+  -> [gemini-4-neon]      AGENT         choose the pick from scored candidates, write reasons[] + speech (<=45 words)
+  -> [gemini-decision-1]  GATE 2        self-check: "Does the pick satisfy every stated constraint?"  yes/no + confidence
+                                         if no or confidence < 0.7 -> Neon retries once with the failure as input
+  -> [gemini-3.8-flash-tts]             speech -> audio for the device (optional; laptop speechSynthesis is the fallback)
+```
+
+| Model | Job (one each, say it this way to judges) |
+| --- | --- |
+| `gemini-4-neon` | The shopper's advocate. Reasons over scored candidates, picks one, explains it in spoken English. |
+| `gemini-4-hydrogen` | The fast hands. Parses constraints, summarises candidates in parallel, drafts text. |
+| `gemini-decision-1` | The referee. Three gates with calibrated confidence: what kind of utterance, how well each candidate fits, does the pick pass. Zero output tokens, ~200 ms. |
+| `gemini-3.5-transcribe` / `gemini-3.8-flash-tts` | Ears and mouth. |
+| `antigravity-preview-09-2026` (Managed Agent, hosted sandbox, Hydrogen) | The auditor. Runs `eval/` against the baseline and writes `eval/REPORT.md`. Not in the live request path. |
+
+Tools the agent code calls (plain functions; declare them as native tools where a model needs them):
 
 | Tool | Args | Returns |
 | --- | --- | --- |
 | `shop_search` | `{ query: string, budget_max_minor?: int, country: "US", currency: "USD", limit: 5 }` | `candidates[]` as in 1.3 |
-| `create_cart` | `{ seller_domain: string, variant_id: string, quantity: 1 }` | `{ cart_id }` |
 | `create_checkout` | `{ seller_domain: string, variant_id: string, quantity: 1 }` | `{ status, merchant, total_minor, currency, expires_at }` and stores `continue_url` server-side only |
 
-The agent must return structured output: `{ speech, pick_id, reasons[], did_research, constraints }`. The backend copies it into state.
+Neon's structured output: `{ pick_id, reasons: string[3], speech: string }`. Hydrogen's constraint output: `{ query, budget_max_minor: int|null, must_have: string[], seller_hint: string|null }`. The backend assembles `state` from these.
 
-System prompt lives at `agent-backend/prompts/shop_counter.md`. It encodes the hardening rules from AGENTS.md and the "Do not claim" list from BRIEF.md.
+Gate rules: `GATE 1 = buy_intent` with confidence >= 0.8 counts as intent only when a physical intent (badge/button) also arrived within 30 s; voice alone never creates a checkout. `GATE 1 = constraint_change` sets `did_research = true`.
+
+Baseline for the eval: one `gemini-4-neon` call with the raw transcript and the raw top-5 catalog JSON, no Hydrogen, no gates. Same rubric scores both.
+
+System prompts live in `agent-backend/prompts/`. They encode the hardening rules from AGENTS.md and the "Do not claim" list from BRIEF.md. Builder-guide prohibitions apply: no temperature/top-p/top-k, no `minimal` thinking level, native structured output only.
 
 ---
 

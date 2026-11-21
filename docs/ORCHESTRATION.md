@@ -85,5 +85,7 @@ Kun's tools available on this Mac (global skills in `~/.claude/skills`): `/kun`,
 | 13:30 | Gemini managed agent + `shop_search` tool, structured output, re-search | Candidate grid, pick highlight, reasons, flow bar | Wi-Fi + HTTP POST from device, speak canned text | Grill the agent prompt with `/grill-me` |
 | 14:30 | `/intent` -> `create_checkout` via Shop MCP, `continue_url` in state only, redaction | QR view, clear button, health indicator | Push-to-talk record -> POST audio or text; button -> `/intent` | Walk the full loop on laptop only |
 | 15:30 | Hardening: stale_pick, session clear, log redaction, `/health` | Polish: transaction-flow animation, typography | RFID badge read -> `/intent source: badge` | `/code-review` on backend checkout path |
-| 16:30 | Freeze. Fix only demo-path bugs. | Freeze. | Freeze. | Rehearse twice, record backup, pitch |
-| 17:00 | Build complete. Submission prep per docs/HACKATHON.md. | | | |
+| 15:30 | eval/: run system vs baseline on attendee utterances, managed-agent run, REPORT.md | Polish | RFID badge -> `/intent source: badge` | `/code-review` on checkout path; collect eval utterances if not done |
+| 16:15 | **Freeze.** Demo-path bugs only. | Freeze. | Freeze. | Rehearse twice. Record the 1-minute video (phone filming device + screen + judge's phone). |
+| 16:50 | | | | **Submit** at cerebralvalley.ai/e/gemini-4-nyc/hackathon/submit. Public repo link, video, demo link. |
+| 17:00 | Round-one judging. 3 min live + 2 min Q&A. Laptop + device + hotspot ready. | | | |
