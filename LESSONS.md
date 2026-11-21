@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 CoreS3 virtual button height
+
+- Symptom: The on-screen button did not respond to touch.
+- Cause: M5Unified defaults the virtual button height to zero.
+- Fix: Set the touch button height explicitly after `M5.begin`.
+
 ## 2026-11-21 Digital Sticker checkout works by exact variant
 
 - Symptom: Global Catalog searches did not return the sticker, although its merchant page exists.
