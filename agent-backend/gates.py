@@ -104,13 +104,19 @@ def _classify_sync(
 
     # Deterministic overrides for clear refinements on existing sessions
     low = text.strip().lower()
-    has_price_or_refinement = bool(
+    has_constraint_change_signal = bool(
         re.search(
-            r"\b(under|below|cheaper|less than|two hundred|three hundred|dollar|cents?|sticker|digital|hat|shirt|print|\d+)\b",
+            r"\b(under|below|cheaper|less than|instead|switch|different|another|show me|find me|two hundred|three hundred)\b|\$\d+",
             low,
         )
     )
-    if has_history and has_price_or_refinement and choice != "buy_intent":
+    has_price_or_refinement = has_constraint_change_signal or bool(
+        re.search(r"\b(dollar|cents?|sticker|digital|hat|shirt|print|\d+)\b", low)
+    )
+    if has_history and has_constraint_change_signal and choice != "buy_intent":
+        choice = "constraint_change"
+        conf = max(conf, 0.85)
+    elif has_history and has_price_or_refinement and choice not in ("buy_intent", "question_about_pick"):
         choice = "constraint_change"
         conf = max(conf, 0.85)
     elif not has_history and choice == "constraint_change":

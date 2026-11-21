@@ -194,6 +194,48 @@ async def run_utterance_pipeline(
         _record_state_reply(state, reply_obj)
         return {"session_id": state["session_id"], "reply": reply_obj}
 
+    # High-confidence factual question about the current pick -> grounded answer without re-searching
+    if (
+        gate1.get("kind") == "question_about_pick"
+        and gate1.get("confidence", 0.0) >= 0.8
+        and state.get("pick")
+    ):
+        current_pick_id = state["pick"]["product_id"]
+        raw_cands = state.get("_raw_candidates") or state.get("candidates", [])
+        pick_cand = next(
+            (c for c in raw_cands if c["product_id"] == current_pick_id),
+            None,
+        )
+        if pick_cand is not None:
+            t0 = time.perf_counter()
+            reply_speech = await agent.answer_pick_question(
+                transcript, pick_cand, state["pick"].get("reasons", [])
+            )
+            timings_ms["neon_pick_qa_ms"] = int((time.perf_counter() - t0) * 1000)
+            state["history"].append(
+                {"t": int(time.time()), "text": transcript, "did_research": False}
+            )
+            state["updated_at"] = int(time.time())
+            reply_obj = {
+                "speech": reply_speech,
+                "pick_id": current_pick_id,
+                "variant_id": state["pick"].get("variant_id"),
+                "price_minor": state["pick"].get("price_minor"),
+                "offer_id": state["pick"].get("offer_id"),
+                "did_research": False,
+                "gate1": gate1,
+            }
+            if audio_bytes:
+                reply_obj["transcript"] = transcript
+            await _attach_tts_if_needed(
+                reply_obj, reply_speech, should_tts=should_tts, timings_ms=timings_ms
+            )
+            timings_ms["total_ms"] = int((time.perf_counter() - t_start) * 1000)
+            reply_obj["timings_ms"] = timings_ms
+            logger.info("utterance_timings_ms=%s", timings_ms)
+            _record_state_reply(state, reply_obj)
+            return {"session_id": state["session_id"], "reply": reply_obj}
+
     # 3. Hydrogen worker: parse constraints
     state["phase"] = "searching"
     t0 = time.perf_counter()

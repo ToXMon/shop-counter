@@ -187,3 +187,57 @@ async def choose_pick(
     except Exception as exc:
         logger.warning("Neon choose_pick fallback: %s", redact_sensitive(str(exc)))
         return _deterministic_pick_fallback(constraints, candidates)
+
+
+def _answer_pick_question_sync(
+    utterance: str,
+    pick_cand: dict[str, Any],
+    reasons: list[str],
+) -> str:
+    client = models.get_client()
+    grounded_pick = {
+        "title": pick_cand.get("title"),
+        "price_minor": pick_cand.get("price_minor"),
+        "spoken_price": minor_to_spoken(int(pick_cand.get("price_minor", 0))),
+        "currency": pick_cand.get("currency", "USD"),
+        "seller": pick_cand.get("seller"),
+        "rating": pick_cand.get("rating"),
+        "requires_shipping": pick_cand.get("requires_shipping"),
+        "description": str(pick_cand.get("description") or "")[:400],
+        "reasons": reasons,
+    }
+    instruction = (
+        "You are Shop Counter. Answer the shopper's factual question about the currently displayed pick "
+        "using ONLY the provided JSON fields. If the listing data does not contain the requested fact "
+        "(such as warranty, material, dimensions, or delivery speed), say honestly that the listing "
+        "does not state it and ask if they want to search for another option. "
+        "Reply in plain English under 45 words, prices as words, no markdown, no URLs. "
+        "Never claim checkout or payment has occurred."
+    )
+    interaction = client.interactions.create(
+        model=models.AGENT_MODEL,
+        system_instruction=instruction,
+        input=json.dumps({"question": utterance, "current_pick": grounded_pick}),
+        generation_config={"thinking_level": "low"},
+    )
+    return sanitize_speech(interaction.output_text or "")
+
+
+async def answer_pick_question(
+    utterance: str,
+    pick_cand: dict[str, Any],
+    reasons: list[str],
+) -> str:
+    """Answer a high-confidence factual question grounded strictly in the current pick's data."""
+    try:
+        ans = await asyncio.to_thread(_answer_pick_question_sync, utterance, pick_cand, reasons)
+        if ans:
+            return ans
+    except Exception as exc:
+        logger.warning("Neon answer_pick_question fallback: %s", redact_sensitive(str(exc)))
+    spoken_price = minor_to_spoken(int(pick_cand.get("price_minor", 0)))
+    seller_name = (pick_cand.get("seller") or {}).get("name", "the merchant")
+    return sanitize_speech(
+        f"The listing for {pick_cand.get('title')} from {seller_name} is {spoken_price}, "
+        "but it does not list that detail. Want me to search for another option?"
+    )
