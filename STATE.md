@@ -43,7 +43,9 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Blocked
 
-- (none)
+- The Mac preview still uses the fixture backend. The live backend and screen have not passed a joint phone checkout.
+- The CoreS3 can send touch intent and a WAV in separate bench tests. Live pairing and offer-bound intent are not yet verified. The current firmware displays reply text; plan on Mac playback unless board playback is proven.
+- Integration checkpoints: backend `1047d9f` (implementation `81e7a78`); screen `e9b3479` (Mac build and 9 tests pass); device `3fbb8b4`. See `docs/DEMO.md`.
 
 ## Decisions made today
 

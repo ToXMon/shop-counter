@@ -18,6 +18,7 @@ This file is written for Antigravity, Claude Code, and Codex alike. CLAUDE.md po
 - PENDING.md - decisions blocked on Tolu.
 - docs/INTERFACES.md - the contracts between modules. Cross-module work goes through these, never by editing another module's folder.
 - docs/HACKATHON.md - event facts, prizes, what judges score, submission checklist.
+- docs/DEMO.md - judge actions, one-minute shot list, and checks before recording.
 - docs/ORCHESTRATION.md - how Antigravity, Claude Code and Codex share this repo; which skill to use when; hour plan with owners.
 - scripts/ - `smoke_catalog.sh` (live Shopify search), `stub_backend.py` (fake backend on :8787), `smoke_backend.sh` (asserts the API contract). Run them; do not re-derive what they prove.
 - .agents/skills/ - project skills (Matt Pocock engineering + productivity, Kun). `.claude/skills` points here. Antigravity and Codex read `.agents/skills/` directly.
