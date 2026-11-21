@@ -31,7 +31,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
-- companion-screen: chunk 1 skeleton (typed request -> one product card, fixture-labelled) - Claude Code - 13:25
+- companion-screen: checkpoint 1 passed on Mac (build, five tests, typed follow-up in Chrome against the stub). Next: local QR, clear behavior, and browser push-to-talk.
 - (claim here: `- module: chunk - tool - HH:MM`)
 
 ## Next (ordered)

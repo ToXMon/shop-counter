@@ -2,6 +2,12 @@
 
 Problems we solved, newest first. Format: symptom, root cause, fix. Read this when stuck.
 
+## 2026-11-21 Screen dependencies install on the Mac
+
+- Symptom: Claude Desktop reported HTTP 403 from the npm registry.
+- Cause: The failure occurred in that session. The same install succeeded on the Mac.
+- Fix: Run `npm ci`, `npm run build`, and `npm test` from `companion-screen/` in Mac Terminal. Run Vite on loopback. Use a fixture backend for local checks. No sandbox settings need to change.
+
 ## 2026-11-21 Digital Sticker checkout works by exact variant
 
 - Symptom: Global Catalog searches did not return the sticker, although its merchant page exists.
