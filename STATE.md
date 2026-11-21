@@ -2,7 +2,7 @@
 
 Living status. Update it when you start or finish a chunk. Newest at the top of each list.
 
-Last updated: 2026-11-21 12:45 EST by AdaL
+Last updated: 2026-11-21 15:15 EST by Claude Code (companion-screen)
 
 ## Clock (confirmed from the participant guide)
 
@@ -31,7 +31,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
-- companion-screen: checkpoint 1 passed on Mac (build, five tests, typed follow-up in Chrome against the stub). Next: local QR, clear behavior, and browser push-to-talk.
+- companion-screen: in-store display (direction A), QR bound to offer_id, stale-response guard after Clear, dev push-to-talk (a7327b4). 23 tests pass. Mac build last verified at 28b3ccd; rerun on a7327b4. Live QR check against :8788 still open. Not merged. - Claude Code - 15:15
 - (claim here: `- module: chunk - tool - HH:MM`)
 
 ## Next (ordered)
@@ -48,6 +48,9 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## Decisions made today
 
+- 15:15 Companion screen binds the QR to the offer: `pick.offer_id` and `handoff.offer_id` (contract: build/backend 9c452a0). Live mode shows a QR only when both are present and equal. The merchant-only match survives in fixture mode only. Responses that land after Clear are dropped (`companion-screen/src/feed.ts`).
+- 15:15 The Mac stays silent by default. Browser push-to-talk and speech exist only with `?dev` (`?dev&speak` to speak). Codex's Mac proxy already speaks device replies with `say`.
+- 15:15 Mac display copy: product view says "Tap the center of the device screen to open checkout."; scan view says "Scan to review and pay on your phone." The tap does not charge anyone.
 - 12:45 Problem statement: Element 119 (voice is the core input), with a 5-Sigma-style eval for Proof It Works. docs/HACKATHON.md.
 - 12:45 Models: Neon (agent), Hydrogen (workers), Decision 1 (gates), 3.5-transcribe, 3.8-flash-tts; Managed Agent runs the eval. docs/INTERFACES.md section 3.
 - Demo: search Monday Cartoons live, then narrow to the Digital Sticker. Use the verified storefront variant and Shop MCP checkout. See `docs/LAUNCH.md` for lane prompts and integration order.
