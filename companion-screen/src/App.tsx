@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cardView, type Health, type SessionState } from "./view.ts";
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8787";
+const BACKEND = import.meta.env.VITE_BACKEND_URL ?? "";
 const POLL_MS = 500;
 
 export function App() {
