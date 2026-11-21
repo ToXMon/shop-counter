@@ -132,6 +132,7 @@ def public_state_view(state: dict[str, Any], *, allow_continue_url: bool = True)
         ),
         "candidates": state.get("candidates", []),
         "pick": state.get("pick"),
+        "reply": state.get("reply"),
         "history": state.get("history", []),
         "handoff": handoff_view,
         "updated_at": state.get("updated_at", int(time.time())),
@@ -182,6 +183,19 @@ async def stream_state(request: Request, session_id: str | None = None) -> Strea
     return StreamingResponse(event_gen(), media_type="text/event-stream")
 
 
+def _parse_optional_bool(raw: Any) -> bool | None:
+    if raw is None:
+        return None
+    if isinstance(raw, bool):
+        return raw
+    val = str(raw).strip().lower()
+    if val in ("1", "true", "yes", "on"):
+        return True
+    if val in ("0", "false", "no", "off"):
+        return False
+    return None
+
+
 @app.post("/utterance")
 async def post_utterance(request: Request) -> dict[str, Any]:
     content_type = (request.headers.get("content-type") or "").lower()
@@ -189,14 +203,14 @@ async def post_utterance(request: Request) -> dict[str, Any]:
     text: str | None = None
     audio_bytes: bytes | None = None
     audio_mime_type = "audio/wav"
-    include_tts = False
+    include_tts: bool | None = _parse_optional_bool(request.query_params.get("include_tts"))
 
     if "multipart/form-data" in content_type:
         form = await request.form()
         session_id = str(form["session_id"]) if "session_id" in form and form["session_id"] else None
         text = str(form["text"]) if "text" in form and form["text"] else None
-        include_tts_val = str(form.get("include_tts", "true")).lower()
-        include_tts = include_tts_val in ("1", "true", "yes")
+        if "include_tts" in form:
+            include_tts = _parse_optional_bool(form.get("include_tts"))
         audio_field = form.get("audio")
         if audio_field is not None and hasattr(audio_field, "read"):
             audio_bytes = await audio_field.read()
@@ -208,11 +222,11 @@ async def post_utterance(request: Request) -> dict[str, Any]:
             body = {}
         session_id = body.get("session_id")
         text = body.get("text")
-        include_tts = bool(body.get("include_tts", False))
+        if "include_tts" in body:
+            include_tts = _parse_optional_bool(body.get("include_tts"))
         if body.get("audio_b64"):
             audio_bytes = base64.b64decode(body["audio_b64"])
             audio_mime_type = body.get("audio_mime_type", "audio/wav")
-            include_tts = bool(body.get("include_tts", True))
 
     st = get_or_create_session(session_id)
     return await pipeline.run_utterance_pipeline(
