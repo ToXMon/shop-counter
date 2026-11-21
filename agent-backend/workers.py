@@ -17,7 +17,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 import models
-from shop import redact_sensitive
+from shop import dollars_to_minor, redact_sensitive
 
 logger = logging.getLogger("shop_counter.workers")
 
@@ -67,7 +67,7 @@ def _fallback_parse_constraints(
 
     m_dollar = re.search(r"\$\s*(\d+(?:\.\d{1,2})?)", low)
     if m_dollar:
-        budget = int(round(float(m_dollar.group(1)) * 100))
+        budget = dollars_to_minor(m_dollar.group(1))
     else:
         for phrase, val in _WORD_NUMBERS.items():
             if phrase in low:

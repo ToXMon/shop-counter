@@ -99,10 +99,15 @@ def test_monday_cartoons_to_digital_sticker_and_checkout() -> None:
     assert r_stale.json()["handoff"]["status"] == "stale_pick"
     assert "continue_url" not in json.dumps(r_stale.json())
 
-    # Valid intent creates real Shop MCP handoff; device never receives continue_url
+    # Valid intent referencing the displayed offer_id creates real Shop MCP handoff; device never receives continue_url
     r_intent = client.post(
         "/intent",
-        json={"session_id": sid, "type": "buy", "source": "button"},
+        json={
+            "session_id": sid,
+            "type": "buy",
+            "source": "button",
+            "offer_id": st["pick"]["offer_id"],
+        },
     )
     assert r_intent.status_code == 200
     intent_body = r_intent.json()

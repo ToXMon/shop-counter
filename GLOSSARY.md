@@ -7,6 +7,7 @@ One term per concept. Use these words in prose, code names, and API fields. Add 
 | **shopper** | The person talking to the device. At the demo, a judge. | user, customer, buyer |
 | **utterance** | One spoken or typed request from the shopper, as text. | query, prompt, message |
 | **pick** | The one product the agent recommends, with its **reasons**. | recommendation, result, top hit |
+| **offer_id** | Deterministic identifier `<seller.domain>:<variant_id>:<price_minor>` binding a physical **intent** tap to the currently displayed **pick** offer. | quote id, cart token |
 | **candidates** | The products the agent compared before choosing the pick. Shown as cards. | results, options, list |
 | **constraint** | A limit the shopper states: budget, brand, feature. "Under two hundred" is a budget constraint. | filter, preference |
 | **re-search** | A new catalog search triggered by a changed constraint. The agentic beat of the demo. | refine, retry |

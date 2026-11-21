@@ -102,6 +102,9 @@ def public_state_view(state: dict[str, Any], *, allow_continue_url: bool = True)
             handoff_view = {
                 "status": handoff.get("status", "ready"),
                 "continue_url": handoff.get("continue_url"),
+                "offer_id": handoff.get("offer_id"),
+                "product_id": handoff.get("product_id"),
+                "variant_id": handoff.get("variant_id"),
                 "merchant": handoff.get("merchant"),
                 "total_minor": handoff.get("total_minor"),
                 "currency": handoff.get("currency", "USD"),
@@ -153,13 +156,16 @@ async def health() -> dict[str, Any]:
 
 @app.get("/state")
 async def get_state(request: Request, session_id: str | None = None) -> dict[str, Any]:
+    if not _is_loopback_request(request):
+        raise HTTPException(status_code=403, detail="State is restricted to the local companion screen")
     st = get_or_create_session(session_id)
-    return public_state_view(st, allow_continue_url=_is_loopback_request(request))
+    return public_state_view(st, allow_continue_url=True)
 
 
 @app.get("/state/stream")
 async def stream_state(request: Request, session_id: str | None = None) -> StreamingResponse:
-    allow_url = _is_loopback_request(request)
+    if not _is_loopback_request(request):
+        raise HTTPException(status_code=403, detail="State stream is restricted to the local companion screen")
 
     async def event_gen():
         last_updated = -1
@@ -169,7 +175,7 @@ async def stream_state(request: Request, session_id: str | None = None) -> Strea
             st = get_or_create_session(session_id)
             if st.get("updated_at") != last_updated:
                 last_updated = st.get("updated_at", 0)
-                payload = json.dumps(public_state_view(st, allow_continue_url=allow_url))
+                payload = json.dumps(public_state_view(st, allow_continue_url=True))
                 yield f"data: {payload}\n\n"
             await asyncio.sleep(0.5)
 
@@ -254,6 +260,27 @@ async def post_tts(request: Request) -> dict[str, Any]:
     return {"ok": bool(res.get("audio_b64")), **res}
 
 
+@app.get("/session/offer")
+async def get_session_offer(session_id: str | None = None) -> dict[str, Any]:
+    """Device-safe session pairing and current offer-ID lookup (never contains continue_url)."""
+    st = get_or_create_session(session_id)
+    pick_info = st.get("pick") or {}
+    pick_cand = next(
+        (c for c in st.get("candidates", []) if c.get("is_pick")),
+        None,
+    )
+    return {
+        "session_id": st["session_id"],
+        "phase": st.get("phase", "idle"),
+        "offer_id": pick_info.get("offer_id"),
+        "pick_id": pick_info.get("product_id"),
+        "variant_id": pick_info.get("variant_id"),
+        "price_minor": pick_info.get("price_minor"),
+        "merchant": (pick_cand.get("seller") or {}).get("name") if pick_cand else None,
+        "updated_at": st.get("updated_at", int(time.time())),
+    }
+
+
 @app.post("/intent")
 async def post_intent(request: Request) -> dict[str, Any]:
     try:
@@ -269,6 +296,7 @@ async def post_intent(request: Request) -> dict[str, Any]:
             "session_id": st["session_id"],
             "handoff": {
                 "status": "error",
+                "offer_id": None,
                 "merchant": None,
                 "total_minor": None,
                 "currency": "USD",
@@ -284,17 +312,27 @@ async def post_intent(request: Request) -> dict[str, Any]:
         (c for c in raw_cands if c["product_id"] == pick_id),
         next((c for c in st["candidates"] if c.get("is_pick")), st["candidates"][0]),
     )
+    current_offer_id = st["pick"].get("offer_id") or pipeline.make_offer_id(pick_cand)
 
-    # Enforce fresh approval / stale_pick if caller's expected item/seller/price differs or session marked stale
+    # Require the tap to reference the displayed offer. Reject missing or stale references.
+    expected_offer_id = body.get("offer_id")
     expected_product_id = body.get("product_id") or body.get("pick_id")
     expected_variant_id = body.get("variant_id")
     expected_price_minor = body.get("price_minor")
     expected_seller = body.get("seller_domain") or body.get("merchant")
 
+    missing_reference = (
+        expected_offer_id is None
+        and expected_product_id is None
+        and expected_variant_id is None
+    )
+
     mismatch = False
-    if expected_product_id and str(expected_product_id) != str(pick_cand["product_id"]):
+    if expected_offer_id is not None and str(expected_offer_id) != str(current_offer_id):
         mismatch = True
-    if expected_variant_id and str(expected_variant_id) != str(pick_cand["variant_id"]):
+    if expected_product_id is not None and str(expected_product_id) != str(pick_cand["product_id"]):
+        mismatch = True
+    if expected_variant_id is not None and str(expected_variant_id) != str(pick_cand["variant_id"]):
         mismatch = True
     if expected_price_minor is not None and int(expected_price_minor) != int(pick_cand["price_minor"]):
         mismatch = True
@@ -304,7 +342,7 @@ async def post_intent(request: Request) -> dict[str, Any]:
     ):
         mismatch = True
 
-    if mismatch or st.get("_stale_pick_pending"):
+    if missing_reference or mismatch or st.get("_stale_pick_pending"):
         st["_stale_pick_pending"] = False
         st["handoff"] = None
         st["phase"] = "pick"
@@ -314,13 +352,14 @@ async def post_intent(request: Request) -> dict[str, Any]:
             "session_id": st["session_id"],
             "handoff": {
                 "status": "stale_pick",
+                "offer_id": current_offer_id,
                 "merchant": pick_cand["seller"]["name"],
                 "total_minor": int(pick_cand["price_minor"]),
                 "currency": pick_cand.get("currency", "USD"),
             },
             "reply": {
                 "speech": agent.sanitize_speech(
-                    f"The offer changed to {pick_cand['title']} at {spoken_price} from {pick_cand['seller']['name']}. Tap again to confirm."
+                    f"Current offer is {pick_cand['title']} at {spoken_price} from {pick_cand['seller']['name']}. Tap again to confirm this offer."
                 )
             },
         }
@@ -344,9 +383,13 @@ async def post_intent(request: Request) -> dict[str, Any]:
     ):
         new_price = int(live_item_price)
         pick_cand["price_minor"] = new_price
+        new_offer_id = pipeline.make_offer_id(pick_cand)
         for pub_c in st["candidates"]:
             if pub_c["product_id"] == pick_cand["product_id"]:
                 pub_c["price_minor"] = new_price
+                pub_c["offer_id"] = new_offer_id
+        st["pick"]["price_minor"] = new_price
+        st["pick"]["offer_id"] = new_offer_id
         st["_offer_signature"] = (
             pick_cand["seller"]["domain"],
             pick_cand["variant_id"],
@@ -360,6 +403,7 @@ async def post_intent(request: Request) -> dict[str, Any]:
             "session_id": st["session_id"],
             "handoff": {
                 "status": "stale_pick",
+                "offer_id": new_offer_id,
                 "merchant": pick_cand["seller"]["name"],
                 "total_minor": new_price,
                 "currency": pick_cand.get("currency", "USD"),
@@ -388,6 +432,9 @@ async def post_intent(request: Request) -> dict[str, Any]:
     st["handoff"] = {
         "status": "ready",
         "continue_url": checkout_info["continue_url"],
+        "offer_id": current_offer_id,
+        "product_id": pick_cand["product_id"],
+        "variant_id": pick_cand["variant_id"],
         "merchant": checkout_info["merchant"],
         "total_minor": int(checkout_info["total_minor"]),
         "currency": checkout_info["currency"],
@@ -401,6 +448,7 @@ async def post_intent(request: Request) -> dict[str, Any]:
     # Device response NEVER includes continue_url
     device_handoff = {
         "status": "ready",
+        "offer_id": current_offer_id,
         "merchant": st["handoff"]["merchant"],
         "total_minor": st["handoff"]["total_minor"],
         "currency": st["handoff"]["currency"],

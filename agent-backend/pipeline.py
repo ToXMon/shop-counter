@@ -24,10 +24,31 @@ import speech
 import workers
 
 
+def make_offer_id(c: dict[str, Any]) -> str:
+    """Build deterministic offer ID binding seller.domain, variant_id, and price_minor."""
+    seller_domain = (c.get("seller") or {}).get("domain", "")
+    return f"{seller_domain}:{c['variant_id']}:{int(c['price_minor'])}"
+
+
+async def _attach_tts_if_needed(
+    reply_obj: dict[str, Any],
+    speech_text: str,
+    *,
+    include_tts: bool,
+    has_audio: bool,
+) -> dict[str, Any]:
+    if include_tts or has_audio:
+        tts_out = await speech.synthesize_speech(speech_text)
+        reply_obj["audio_b64"] = tts_out["audio_b64"]
+        reply_obj["audio_mime_type"] = tts_out["mime_type"]
+    return reply_obj
+
+
 def _public_candidate(c: dict[str, Any], is_pick: bool) -> dict[str, Any]:
     return {
         "product_id": c["product_id"],
         "variant_id": c["variant_id"],
+        "offer_id": make_offer_id(c),
         "title": c["title"],
         "price_minor": int(c["price_minor"]),
         "currency": c.get("currency", "USD"),
@@ -66,10 +87,9 @@ async def run_utterance_pipeline(
             "transcript": "",
             "needs_clarification": True,
         }
-        if include_tts or audio_bytes:
-            tts_out = await speech.synthesize_speech(reply_speech)
-            reply_obj["audio_b64"] = tts_out["audio_b64"]
-            reply_obj["audio_mime_type"] = tts_out["mime_type"]
+        await _attach_tts_if_needed(
+            reply_obj, reply_speech, include_tts=include_tts, has_audio=bool(audio_bytes)
+        )
         state["phase"] = "pick" if state.get("pick") else "idle"
         return {"session_id": state["session_id"], "reply": reply_obj}
 
@@ -98,10 +118,9 @@ async def run_utterance_pipeline(
             "needs_clarification": True,
             "gate1": gate1,
         }
-        if include_tts or audio_bytes:
-            tts_out = await speech.synthesize_speech(reply_speech)
-            reply_obj["audio_b64"] = tts_out["audio_b64"]
-            reply_obj["audio_mime_type"] = tts_out["mime_type"]
+        await _attach_tts_if_needed(
+            reply_obj, reply_speech, include_tts=include_tts, has_audio=bool(audio_bytes)
+        )
         return {"session_id": state["session_id"], "reply": reply_obj}
 
     # Voice alone never creates a checkout (hard rule). Record voice buy intent timestamp and prompt physical tap.
@@ -126,14 +145,14 @@ async def run_utterance_pipeline(
         reply_obj = {
             "speech": reply_speech,
             "pick_id": current_pick_id,
+            "offer_id": state["pick"].get("offer_id"),
             "did_research": False,
             "transcript": transcript,
             "gate1": gate1,
         }
-        if include_tts or audio_bytes:
-            tts_out = await speech.synthesize_speech(reply_speech)
-            reply_obj["audio_b64"] = tts_out["audio_b64"]
-            reply_obj["audio_mime_type"] = tts_out["mime_type"]
+        await _attach_tts_if_needed(
+            reply_obj, reply_speech, include_tts=include_tts, has_audio=bool(audio_bytes)
+        )
         return {"session_id": state["session_id"], "reply": reply_obj}
 
     # 3. Hydrogen worker: parse constraints
@@ -184,10 +203,9 @@ async def run_utterance_pipeline(
             "did_research": did_research,
             "transcript": transcript,
         }
-        if include_tts or audio_bytes:
-            tts_out = await speech.synthesize_speech(reply_speech)
-            reply_obj["audio_b64"] = tts_out["audio_b64"]
-            reply_obj["audio_mime_type"] = tts_out["mime_type"]
+        await _attach_tts_if_needed(
+            reply_obj, reply_speech, include_tts=include_tts, has_audio=bool(audio_bytes)
+        )
         return {"session_id": state["session_id"], "reply": reply_obj}
 
     # 5. Hydrogen parallel workers: summarise each candidate
@@ -249,6 +267,7 @@ async def run_utterance_pipeline(
         # Offer changed after a previous handoff -> require fresh approval
         state["_stale_pick_pending"] = False
 
+    offer_id = make_offer_id(pick_cand)
     state["_raw_candidates"] = scored_candidates[:5]
     state["_offer_signature"] = new_sig
     state["_stale_pick_pending"] = False
@@ -257,6 +276,9 @@ async def run_utterance_pipeline(
     state["candidates"] = public_cands
     state["pick"] = {
         "product_id": pick_id,
+        "variant_id": pick_cand["variant_id"],
+        "price_minor": int(pick_cand["price_minor"]),
+        "offer_id": offer_id,
         "reasons": neon_choice["reasons"][:3],
     }
     # Clear any previous checkout handoff whenever a new utterance updates the pick/constraints
@@ -269,12 +291,15 @@ async def run_utterance_pipeline(
     reply_obj = {
         "speech": neon_choice["speech"],
         "pick_id": pick_id,
+        "variant_id": pick_cand["variant_id"],
+        "price_minor": int(pick_cand["price_minor"]),
+        "offer_id": offer_id,
         "did_research": did_research,
     }
     if audio_bytes or include_tts:
         reply_obj["transcript"] = transcript
-        tts_out = await speech.synthesize_speech(neon_choice["speech"])
-        reply_obj["audio_b64"] = tts_out["audio_b64"]
-        reply_obj["audio_mime_type"] = tts_out["mime_type"]
+        await _attach_tts_if_needed(
+            reply_obj, neon_choice["speech"], include_tts=include_tts, has_audio=bool(audio_bytes)
+        )
 
     return {"session_id": state["session_id"], "reply": reply_obj}

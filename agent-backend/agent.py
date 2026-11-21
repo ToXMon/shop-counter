@@ -17,7 +17,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 import models
-from shop import minor_to_spoken, redact_sensitive
+from shop import dollars_to_minor, minor_to_spoken, redact_sensitive
 
 logger = logging.getLogger("shop_counter.agent")
 
@@ -44,7 +44,7 @@ def sanitize_speech(speech: str, max_words: int = 44) -> str:
     def _replace_dollar(match: re.Match[str]) -> str:
         raw = match.group(1).replace(",", "")
         try:
-            minor = int(round(float(raw) * 100))
+            minor = dollars_to_minor(raw)
             return minor_to_spoken(minor)
         except Exception:
             return match.group(0)
