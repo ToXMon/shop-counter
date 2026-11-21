@@ -31,7 +31,7 @@ Last updated: 2026-11-21 12:45 EST by AdaL
 
 ## In flight
 
-- (claim here: `- module: chunk - tool - HH:MM`)
+- device: CoreS3 button intent and laptop stub smoke - Codex - 12:50
 
 ## Next (ordered)
 
