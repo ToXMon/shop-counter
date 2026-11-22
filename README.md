@@ -6,7 +6,7 @@ tap the device to request checkout, and scan a QR to review on your own phone.
 
 Gemini 4 NYC Hackathon · Nov 21, 2026 · Problem Statement Two: Element 119
 Public repo: https://github.com/ToXMon/shop-counter
-1-Minute Demo Video: `[TODO: paste public 1-minute video URL before submitting]`
+1-Minute Demo Video: `[https://youtu.be/QMoHmjNEPio?feature=shared`
 
 ## How it works
 
